@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+    hi this is html page
+    <div>v</div>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script>
+        const rtcSocket = io('/rtc');
+
+        rtcSocket.on('connect', () => {
+            console.log('Connected to /rtc namespace with ID:', rtcSocket.id);
+        });
+
+        rtcSocket.emit('message', 'Hello from the /rtc client');
+
+        rtcSocket.on('message', (message) => {
+            document.querySelector('div').innerText = message
+        });
+    </script>
+</body>
+</html>
