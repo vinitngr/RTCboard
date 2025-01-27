@@ -118,7 +118,7 @@ export const logout = async (req : any , res : any) => {
 
 export const checkAuth = (req : any , res : any) => {
   try {
-    res.status(200).json(req.user);
+    res.status(200).json(res.locals.user);
   } catch (error) {   
     console.log("Error while checking auth", error.message);
     res.status(500).json({ message: "Internal Server Error" });

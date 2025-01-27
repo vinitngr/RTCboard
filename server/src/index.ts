@@ -7,6 +7,9 @@ import connectDB from './lib/db';
 import dotenv from 'dotenv';
 dotenv.config();
 
+//cookie
+import cookieParser from 'cookie-parser';
+app.use(cookieParser());
 //routes
 import authRoute from './routes/auth.route';
 
