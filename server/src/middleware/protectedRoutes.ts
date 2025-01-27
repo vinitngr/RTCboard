@@ -1,25 +1,29 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken'
 import User from '../models/User';
-export const protectedRoutes = async (req: Request, res: Response, next: NextFunction) => {
+import dotenv from 'dotenv';
+dotenv.config();
+export const protectedRoutes = async (req: any, res: any, next: any) => {
     try {
-        const token = req.cookies['token'];
+        const token = req.headers['authorization']?.split(' ')[1];
+        
         if (!token) {
-            return res.status(401).json({ message: 'Unauthorized' });
+          return res.status(401).json({ message: 'Unauthorized, token missing' });
         }
-        const user = jwt.verify(token , JSON.stringify(process.env.JWT_SECRET)) as { id: string };
-        if (!user?.id) {
-            return res.status(401).json({ message: 'Unauthorized' });
+        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string };
+        if (!decoded?.id) {
+          return res.status(401).json({ message: 'Unauthorized, invalid token' });
         }
 
-        const foundUser = User.findById(user.id);
+        const foundUser = await User.findById(decoded.id); // Await the result from the DB
         if (!foundUser) {
-            return res.status(401).json({ message: 'User not found' });
+          return res.status(401).json({ message: 'User not found' });
         }
+    
         res.locals.user = foundUser;
         next();
-    } catch (error) {
-        console.log(error);
+      } catch (error) {
+        console.error(error);
         return res.status(500).json({ message: 'Internal server error' });
-    }
+      }
 };

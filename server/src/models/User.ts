@@ -1,20 +1,16 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
 interface IUser extends Document {
-  name: string;
+  _id : mongoose.Schema.Types.ObjectId;
+  fullName: string;
   email: string;
   password: string;
-  role: string;
-  createdAt: Date;
 }
 
-const userSchema  = new mongoose.Schema<IUser>(
-  {
-    name: { type: String, required: true },
+const userSchema  = new mongoose.Schema<IUser>({
+    fullName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    role: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now },
+    password: { type: String, required: true }
   },
   { timestamps: true }
 );
