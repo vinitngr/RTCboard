@@ -3,6 +3,14 @@ import express from 'express'
 import path from 'path'
 import connectDB from './lib/db';
 
+//cors
+import cors from 'cors';
+app.use(
+  cors({
+    origin: ['http://localhost:5173/'],
+    credentials: true,
+  })
+);
 //dotenv setup
 import dotenv from 'dotenv';
 dotenv.config();
