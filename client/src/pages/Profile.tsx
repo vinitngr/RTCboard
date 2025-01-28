@@ -1,13 +1,13 @@
 import { useState } from "react";
+import { useAuthStore } from "../store/authStore";
+import { Grid, List } from "lucide-react";
 
 function Profile() {
   const [viewMode, setViewMode] = useState("grid");
 
+  const {authUser} = useAuthStore();
   // Sample data
-  const user = {
-    name: "John Doe",
-    email: "johndoe@example.com",
-  };
+
 
   const rooms = [
     {
@@ -35,8 +35,8 @@ function Profile() {
           <div>
               <h2 className="text-3xl font-semibold text-gray-900">Profile</h2>
               <div className="mt-4 text-lg text-gray-700">
-                <p><strong>Name:</strong> {user.name}</p>
-                <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Name:</strong> {authUser?.fullName}</p>
+                <p><strong>Email:</strong> {authUser?.email}</p>
               </div>
           </div>
           <img
@@ -49,18 +49,18 @@ function Profile() {
         <div className="mt-6">
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-semibold text-gray-900">Your Rooms</h3>
-            <div className="space-x-4">
+            <div className="gap-4 flex">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`px-4 py-2 rounded-lg ${viewMode === "grid" ? "bg-black text-white" : "bg-gray-200"}`}
+                className={`px-4 py-1 rounded-lg ${viewMode === "grid" ? "bg-black text-white" : "bg-gray-200"}`}
               >
-                Grid View
+                <Grid size={18}/>
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`px-4 py-2 rounded-lg ${viewMode === "list" ? "bg-black text-white" : "bg-gray-200"}`}
+                className={`px-4 py-1 rounded-lg ${viewMode === "list" ? "bg-black text-white" : "bg-gray-200"}`}
               >
-                List View
+                <List size={18}/>
               </button>
             </div>
           </div>

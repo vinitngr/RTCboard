@@ -34,9 +34,9 @@ function Home() {
       <div className="max-w-6xl mx-auto px-6 space-y-8">
 
         {/* Flex layout for Create and Join Room */}
-        <div className="flex space-x-8 justify-center">
+        <div className="md:flex-row flex flex-col items-center gap-5 justify-center">
           {/* Create Room Card */}
-          <div className="w-80 p-6 bg-white rounded-lg shadow-lg border border-gray-200 space-y-4">
+          <div className="w-full p-6 bg-white rounded-lg shadow-lg border border-gray-200 space-y-4">
             <h3 className="text-xl font-semibold text-gray-900">Create Room</h3>
             <div>
               <input
@@ -65,7 +65,7 @@ function Home() {
           </div>
 
           {/* Join Room Card */}
-          <div className="w-80 p-6 bg-white rounded-lg shadow-lg border border-gray-200 space-y-4">
+          <div className="w-full p-6 bg-white rounded-lg shadow-lg border border-gray-200 space-y-4">
             <h3 className="text-xl font-semibold text-gray-900">Join Room</h3>
             <div>
               <input

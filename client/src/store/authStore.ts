@@ -11,7 +11,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
         const res = await axiosInstance.get("/auth/check-auth", { withCredentials: true });
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { token, ...user } = res.data;
-        console.log("Authenticated user:", user);
         set({ authUser: user });
       } catch (error) {
         if (isAxiosError(error)) {
@@ -33,13 +32,15 @@ export const useAuthStore = create<AuthStore>((set) => ({
         const res = await axiosInstance.post("/auth/login", formData);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { token, ...user } = res.data;
-        console.log(res.data);
         
         set({ authUser: user });
       } catch (error) {
         if (isAxiosError(error) && error.response?.data?.message) {
-          const validationErrors = error.response.data.message.map((err: { message: string }) => err.message);
+          const validationErrors = error.response.data.message.map((err: { message: string }) => ({
+            message : err.message
+          }));
           console.log("Validation Errors:", validationErrors);
+          // alert(validationErrors.join("\n"));
         } else {
           console.error("Error in login:", (error as Error).message);
         } 
@@ -55,7 +56,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
         console.log(res.data);
         set({ authUser: user });
       } catch (error) {
-        console.log("Error in Register" , error);
+        if(isAxiosError(error) && error.response?.data?.message){
+          console.error("Error in Register" , error.response.data);
+        }else{
+          console.error("Error in Register:", (error as Error).message);
+        }
         set({ authUser: null });
       }
     },

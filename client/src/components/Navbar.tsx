@@ -9,14 +9,14 @@ function Navbar() {
     <nav className="bg-black text-white p-4 flex justify-between items-center">
       <div className="text-xl font-bold hover:cursor-pointer"
       onClick={() => navigate("/home")}
-      >MyApp</div>
+      >RTCboard</div>
       <ul className="flex space-x-4">
         <li className="hover:underline cursor-pointer"
         onClick={() => navigate("/home")}
         >Home</li>
         <li className="hover:underline cursor-pointer"
         onClick={() => navigate("/profile")}
-        >About</li>
+        >Profile</li>
         {authUser && (
           <li className="hover:underline cursor-pointer" onClick={handleLogout}>
             LogOut

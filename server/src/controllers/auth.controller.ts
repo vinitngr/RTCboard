@@ -43,7 +43,6 @@ export const register = async (req : any , res : any) => {
     }
     try {
       const token = generateToken(savedUser._id, res);
-      console.log('Token generated:', token);
 
       res.status(201).json({
         _id: savedUser._id,
@@ -126,27 +125,6 @@ export const checkAuth = (req : any , res : any) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
