@@ -18,7 +18,6 @@ export const register = async (req : any , res : any) => {
   });
 
   const validation = Schema.safeParse({ fullName, email, password });
-  console.log(validation.error);
   if(!validation.success){
     return res.status(400).json({ message: validation.error.errors});
   }
@@ -68,7 +67,10 @@ export const login = async ( req : any , res : any ) => {
   const { email, password } = req.body;
 
   const Schema = z.object({
-    email: z.string().email({ message: "Invalid email" }),
+    email: z.string().email().regex(
+      /^[a-zA-Z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com|yahoo\.com)$/,
+      "Invalid email domain. Only Gmail, Hotmail, Outlook, and Yahoo are allowed."
+    ),
     password: z.string().min(6 , { message: "Password must be at least 6 characters long" }),
   });
 
