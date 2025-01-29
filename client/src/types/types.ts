@@ -2,6 +2,7 @@ interface AuthUser {
     id: string;
     fullName: string;
     email: string;
+    profilepic : string
 }
   
 export interface AuthStore {

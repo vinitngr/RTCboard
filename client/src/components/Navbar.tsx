@@ -14,13 +14,16 @@ function Navbar() {
         <li className="hover:underline cursor-pointer"
         onClick={() => navigate("/home")}
         >Home</li>
-        <li className="hover:underline cursor-pointer"
-        onClick={() => navigate("/profile")}
-        >Profile</li>
+        
         {authUser && (
-          <li className="hover:underline cursor-pointer" onClick={handleLogout}>
-            LogOut
+          <>
+            <li className="hover:underline cursor-pointer"
+            onClick={() => navigate("/profile")}>
+              Profile</li>
+            <li className="hover:underline cursor-pointer" onClick={handleLogout}>
+              LogOut
           </li>
+          </>
         )}
       </ul>
     </nav>

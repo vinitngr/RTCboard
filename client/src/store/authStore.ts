@@ -32,18 +32,21 @@ export const useAuthStore = create<AuthStore>((set) => ({
         const res = await axiosInstance.post("/auth/login", formData);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { token, ...user } = res.data;
-        
+        console.log(user);
         set({ authUser: user });
       } catch (error) {
-        if (isAxiosError(error) && error.response?.data?.message) {
-          const validationErrors = error.response.data.message.map((err: { message: string }) => ({
-            message : err.message
-          }));
-          console.log("Validation Errors:", validationErrors);
-          // alert(validationErrors.join("\n"));
-        } else {
-          console.error("Error in login:", (error as Error).message);
-        } 
+        if (isAxiosError(error)) {
+          if (Array.isArray(error.response?.data?.message)) {
+            const validationErrors = error.response.data.message.map((err: { message: string }) => ({
+              message: err.message
+            }));
+            console.log("Validation Errors:", validationErrors);
+          } else if (typeof error.response?.data?.message === "string") {
+            console.log("Validation Error:", error.response.data.message);
+          } else {
+            console.log("Axios Error:", error);
+          }
+        }
         set({ authUser: null });
       }
     },
