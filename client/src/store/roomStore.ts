@@ -3,6 +3,8 @@ import { axiosInstance } from "../lib/axiosinstance";
 import { useAuthStore } from "./authStore";
 import { RoomStore } from "../types/types";
 export const useRoomStore = create<RoomStore>((set) => ({
+
+    //todo update that room details for creater when joiner join  ?? using web socket connection
     roomDetails: null,
     createRoom: async (roomData) => {
         const userDetails : { userId : string | undefined , fullName : string | undefined } = {
@@ -31,9 +33,10 @@ export const useRoomStore = create<RoomStore>((set) => ({
         }
     },
 
-    exitRoom: async (roomId: string) => {
+    exitRoom: async (roomId) => {
+        console.log(roomId);
         try {
-            const res = await axiosInstance.post("/room/exit-room", { roomId });
+            const res = await axiosInstance.delete(`/room/exit-room/${roomId}`);
             console.log(res.data);
             set({ roomDetails : null });
         } catch (error) {

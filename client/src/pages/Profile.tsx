@@ -42,6 +42,7 @@ function Profile() {
               <div className="mt-4 text-lg text-gray-700">
                 <p><strong>Name:</strong> {authUser?.fullName}</p>
                 <p><strong>Email:</strong> {authUser?.email}</p>
+                <p><strong>Joined:</strong> {new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric' }).format(new Date(authUser?.createdAt || ''))}</p>
               </div>
           </div>
         </div>

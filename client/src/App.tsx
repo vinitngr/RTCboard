@@ -30,6 +30,7 @@ function App() {
       </div> : 
       <Routes>
         <Route path="/" element={<Layout/>}>
+          <Route index element={authUser ? <Home /> : <Navigate to="/login" replace />} />
           <Route path="home" element={authUser ? <Home /> : <Navigate to="/login" replace />} />
           <Route path="login" element={!authUser ? <Login /> : <Navigate to="/home" replace /> } />
           <Route path="register" element={!authUser ? <Register /> : <Navigate to="/home" replace />} />

@@ -20,8 +20,7 @@ export const createRoom = async (req: any, res: any) => {
             roomId : id ,
             status : "Active" ,
             participants : [
-                { role : "creator" , ...req.body.userDetails },
-                { role : "joiner" , 'userId' : '' , 'fullName' : '' }
+                { role : "creator" , ...req.body.userDetails }
             ] , 
             roomName
         });
@@ -48,8 +47,7 @@ export const joinRoom = async (req: any, res: any) => {
         }
         const roomData = JSON.parse(room);
 
-        roomData.participants.push(userDetails);
-        
+        roomData.participants.push({role : "joiner" ,...userDetails });
         if (roomData.status !== "Active") {
             res.status(401).json({ message: "Room is not active" });
         } else if (roomData.roomPassword !== roomPassword) {
@@ -69,9 +67,9 @@ export const joinRoom = async (req: any, res: any) => {
 }
 
 export const exitRoom = async (req: any, res: any) => {
-    const { roomId } = req.body;
+    const { roomId } = req.params;
     if(!roomId){
-        res.status(400).json({message : "RoomId required"})
+        return res.status(400).json({message : "RoomId required"})
     }
     try {
         const findRoom = await client.get(`room:${roomId}`);

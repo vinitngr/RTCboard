@@ -1,11 +1,12 @@
-import { Copy } from "lucide-react";
+import { Copy, Eraser, Pen, PencilLine, Save, Trash } from "lucide-react";
 import { useRoomStore } from "../store/roomStore";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 export default function Room() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [, setTool] = useState("pen");
 
-  const { roomDetails } = useRoomStore()
+  const { roomDetails , exitRoom } = useRoomStore()
+  const [liveUser , setLiveUser] = useState(0)
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     if (canvas) {
@@ -13,7 +14,18 @@ export default function Room() {
       ctx?.clearRect(0, 0, canvas.width, canvas.height);
     }
   };
+//TODO : Add live user count , use socket when user 2 join || or use continous polling
+  useEffect(() => {
+    setLiveUser(roomDetails?.participants?.length || 0);
+  }, [roomDetails])
 
+  const handleDisconnect = async () => {
+    try {
+      await exitRoom(roomDetails?.roomId);
+    } catch (error) {
+      console.log('Error' , error);
+    }
+  }
   const saveCanvas = () => {
     const canvas = canvasRef.current;
     if (canvas) {
@@ -37,13 +49,15 @@ export default function Room() {
       </div>
 
       <div className="flex flex-col w-2/3 gap-4">
-        <div className="flex items-center gap-2">
-        <span className="text-lg font-semibold text-black">Room ID: {roomDetails?.roomId}</span>
-
-        <Copy color="black" size={20} 
-            onClick={()=>{
-            navigator.clipboard.writeText(roomDetails?.roomId || "");
-            }}/>
+        <div>
+        <div  className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-semibold text-black">Room ID: {roomDetails?.roomId}</span>
+            <Copy color="black" size={20} onClick={()=>{navigator.clipboard.writeText(roomDetails?.roomId || "");}}/>
+              <div className="text-black text-xs">Users : {liveUser}</div>
+          </div>
+          <div className="text-lg font-semibold text-black mx-5">Room Name : {roomDetails?.roomName}</div>
+        </div>
 
       </div>
         <div className="relative flex-1 bg-gray-800 rounded-lg p-4">
@@ -51,13 +65,20 @@ export default function Room() {
         </div>
 
         <div className="flex justify-center gap-3 bg-gray-900 p-3 rounded-lg">
-          {["Pen", "Pencil", "Erase"].map((toolName) => (
-            <button key={toolName} className="px-3 py-2 bg-gray-700 rounded-lg" onClick={() => setTool(toolName.toLowerCase())}>
-              {toolName}
+          {[
+            {icon: <Pen/>, name: 'Pen'},
+            {icon: <PencilLine/>, name: 'Pencil'},
+            {icon: <Eraser/>, name: 'Eraser'}
+          ].map(({icon, name}) => (
+            <button key={name} className="px-3 py-2 bg-gray-700 rounded-lg flex items-center gap-2" onClick={() => setTool(name.toLowerCase())}>
+              {icon} {name}
             </button>
           ))}
-          <button className="px-3 py-2 bg-gray-700 rounded-lg" onClick={clearCanvas}>Clear</button>
-          <button className="px-3 py-2 bg-gray-700 rounded-lg" onClick={saveCanvas}>Save</button>
+          <button className="px-3 py-2 bg-gray-700 rounded-lg" onClick={clearCanvas}><Trash /></button>
+          <button className="px-3 py-2 bg-gray-700 rounded-lg" onClick={saveCanvas}><Save color="white" size={20}/></button>
+          <div className="bg-red-500 rounded-lg hover:cursor-pointer flex justify-center items-center p-2 justify-self-end"
+          onClick={handleDisconnect}
+          >Disconnect</div>
         </div>
       </div>
     </div>

@@ -8,10 +8,10 @@ function JoinRoom() {
 
     const { joinRoom , roomDetails } = useRoomStore();
 
-    const handleJoinSubmit = (e: React.FormEvent<HTMLFormElement>) =>{
+    const handleJoinSubmit = async (e: React.FormEvent<HTMLFormElement>) =>{
       e.preventDefault();
       try {
-        joinRoom(joinRoomData);
+        await joinRoom(joinRoomData);
         setJoinRoomData({ roomId: "", roomPassword: "" });
         navigate(`/room/${roomDetails?.roomId}`)
       } catch (error) {

@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post('/create-room' , protectedRoutes , createRoom )
 router.post('/join-room' , protectedRoutes , joinRoom )
-router.delete('/exit-room', protectedRoutes , exitRoom )
+router.delete('/exit-room/:roomId', protectedRoutes , exitRoom )
 
 export default router;
