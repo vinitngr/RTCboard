@@ -12,12 +12,13 @@ function Login() {
   const { handleLogin } = useAuthStore();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-      try{e.preventDefault();
-      handleLogin(formData);
-    }catch(error){
-      console.log(error);
-      setFormData({ email: "", password: "" });
-    }
+      try{
+        e.preventDefault();
+        handleLogin(formData);
+      }catch(error){
+        console.log(error);
+        setFormData({ email: "", password: "" });
+      }
   };
 
   return (
