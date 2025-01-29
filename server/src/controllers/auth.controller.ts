@@ -1,8 +1,5 @@
-import User from "../models/User";
 import { generateToken } from "../lib/utils";
-import bcrypt from "bcrypt";
 import { z } from "zod";
-import mongoose from "mongoose";
 import { loginUser, registerUser } from "../services/auth.service";
 
 
@@ -20,7 +17,7 @@ export const register = async (req: any, res: any) => {
 
   const validation = Schema.safeParse({ fullName, email, password });
   if (!validation.success) {
-    return res.status(400).json({ message: validation.error.errors });
+    return res.status(400).json({ message: validation.error.errors[0].message });
   }
 
   try {

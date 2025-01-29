@@ -20,7 +20,7 @@ import cookieParser from 'cookie-parser';
 app.use(cookieParser());
 //routes
 import authRoute from './routes/auth.route';
-
+import roomRoute from './routes/room.route';
 //socket
 import './sockets/rtc'
 
@@ -30,6 +30,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 //handle routes here
 app.use('/api/auth', authRoute);
+app.use('/api/room', roomRoute);
 
 //server startup
 let port : number = parseInt(process.env.PORT) || 3000;

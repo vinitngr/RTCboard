@@ -4,7 +4,6 @@ import User from '../models/User';
 export const protectedRoutes = async (req: any, res: any, next: any) => {
     try {
         const token = req.cookies.cookie || req.headers['authorization']?.split(' ')[1];
-        
         if (!token) {
           return res.status(401).json({ message: 'Unauthorized, token missing' });
         }
