@@ -15,7 +15,7 @@ export const createRoom = async (req: any, res: any) => {
 
     const id = crypto.randomBytes(6).toString('hex')
     try {
-        await client.set(`room:${id}`, JSON.stringify({ id , status : "Active" , roomPassword , participants : [{ role : "creator" , ...req.body.userDetails }] , roomName }) ,  "EX", 60*10 );
+        await client.set(`room:${id}`, JSON.stringify({ roomId : id , status : "Active" , roomPassword , participants : [{ role : "creator" , ...req.body.userDetails }] , roomName }) ,  "EX", 60*10 );
         res.status(201).json({ 
             roomId : id ,
             status : "Active" ,
@@ -55,8 +55,8 @@ export const joinRoom = async (req: any, res: any) => {
         } else if (roomData.roomPassword !== roomPassword) {
             res.status(401).json({ message: "Invalid room password" });
         } else {
-            await client.set(`room:${roomId}`, JSON.stringify({...roomData , status: 'Joined'}));
-            res.status(200).json({ 
+            await client.set(`room:${roomId}`, JSON.stringify({ ...roomData, status: 'Joined' }), "EX", 60 * 10);
+            res.status(200).json({
                 roomId: roomId,
                 status: "Joined",
                 participants: roomData.participants,

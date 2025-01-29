@@ -14,7 +14,7 @@ export interface AuthStore {
 }
 
 export interface RoomStore {
-    roomDetails: null;
+    roomDetails: null | { roomId: string; roomName: string; roomPassword: string; status: string; participants: { role: string , fullName: string, userId: string }[] };
     createRoom: (roomData: { roomName: string; roomPassword: string }) => Promise<void>;
     joinRoom: (joinRoomData: { roomId: string; roomPassword: string }) => Promise<void>;
     exitRoom: (roomId: string) => Promise<void>;

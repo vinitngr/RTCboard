@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useAuthStore } from "../store/authStore";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
 function Login() {

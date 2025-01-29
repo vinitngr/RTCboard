@@ -1,14 +1,18 @@
 import React, { useState } from 'react'
 import { useRoomStore } from '../store/roomStore';
+import { useNavigate } from 'react-router-dom';
 function CreateRoom() {
     const [roomData, setRoomData] = useState<{ roomName: string; roomPassword: string }>({ roomName: "", roomPassword: "" });
 
+    const navigate = useNavigate();
     const { createRoom } = useRoomStore();
-    const handleCreateSubmit = (e : React.FormEvent<HTMLFormElement>) =>{
+    const handleCreateSubmit = async (e : React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
         try {
-            createRoom(roomData);
+            const roomId = await createRoom(roomData);
+            console.log(roomId);
             setRoomData({ roomName: "", roomPassword: "" });
+            navigate(`/room/${roomId}`)
         } catch (error) {
             console.log('Error' , error);            
         }

@@ -12,6 +12,7 @@ export const useRoomStore = create<RoomStore>((set) => ({
         try {
             const res = await axiosInstance.post("/room/create-room", {...roomData , userDetails });
             set({ roomDetails : res.data });
+            return res.data?.roomId
         } catch (error) {
             console.log("Error:", error);          
         }

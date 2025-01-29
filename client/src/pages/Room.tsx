@@ -1,11 +1,11 @@
 import { Copy } from "lucide-react";
+import { useRoomStore } from "../store/roomStore";
 import { useRef, useState } from "react";
-
 export default function Room() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [, setTool] = useState("pen");
-  const roomId = "ROOM1234";
 
+  const { roomDetails } = useRoomStore()
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     if (canvas) {
@@ -26,7 +26,6 @@ export default function Room() {
 
   return (
     <div className="flex h-screen text-white p-6 gap-6">
-      {/* Left Panel for Video Call */}
       <div className="flex flex-col w-1/3 gap-4">
            <div  className="h-1/2 bg-gray-800 rounded-lg flex items-center justify-center">
             <video className="w-full h-full bg-gray-700 rounded-lg" autoPlay muted></video>
@@ -37,25 +36,20 @@ export default function Room() {
 
       </div>
 
-      {/* Right Panel for Canvas */}
       <div className="flex flex-col w-2/3 gap-4">
-        {/* Top Bar */}
         <div className="flex items-center gap-2">
-        <span className="text-lg font-semibold text-black">Room ID: {roomId}</span>
+        <span className="text-lg font-semibold text-black">Room ID: {roomDetails?.roomId}</span>
 
         <Copy color="black" size={20} 
-        onClick={()=>{
-            navigator.clipboard.writeText(roomId);
+            onClick={()=>{
+            navigator.clipboard.writeText(roomDetails?.roomId || "");
             }}/>
 
       </div>
-
-        {/* Canvas Area */}
         <div className="relative flex-1 bg-gray-800 rounded-lg p-4">
           <canvas ref={canvasRef} className="w-full h-full bg-white rounded-lg"></canvas>
         </div>
 
-        {/* Toolbar */}
         <div className="flex justify-center gap-3 bg-gray-900 p-3 rounded-lg">
           {["Pen", "Pencil", "Erase"].map((toolName) => (
             <button key={toolName} className="px-3 py-2 bg-gray-700 rounded-lg" onClick={() => setTool(toolName.toLowerCase())}>

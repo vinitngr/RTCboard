@@ -1,15 +1,19 @@
 import React, { useState } from 'react'
 import { useRoomStore } from '../store/roomStore';
+import { useNavigate } from 'react-router-dom';
 
 function JoinRoom() {
     const [joinRoomData, setJoinRoomData] = useState<{ roomId: string; roomPassword: string }>({ roomId: "", roomPassword: "" });
+    const navigate = useNavigate()
 
-    const { joinRoom } = useRoomStore();
+    const { joinRoom , roomDetails } = useRoomStore();
+
     const handleJoinSubmit = (e: React.FormEvent<HTMLFormElement>) =>{
       e.preventDefault();
       try {
         joinRoom(joinRoomData);
         setJoinRoomData({ roomId: "", roomPassword: "" });
+        navigate(`/room/${roomDetails?.roomId}`)
       } catch (error) {
         console.log('Error' , error);        
       }

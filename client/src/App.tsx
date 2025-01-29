@@ -8,10 +8,11 @@ import { Loader } from "lucide-react"
 import Profile from "./pages/Profile"
 import Room from "./pages/Room"
 import Layout from "./components/Layout"
+import { useRoomStore } from "./store/roomStore"
 function App() {
   const [isloading , setisloading] = useState(true) 
   const { checkAuth , authUser } = useAuthStore()
-
+  const { roomDetails } = useRoomStore()
   useEffect(() => {
     const checkAuthStatus = async () => {
       await checkAuth();
@@ -34,7 +35,7 @@ function App() {
           <Route path="register" element={!authUser ? <Register /> : <Navigate to="/home" replace />} />
           <Route path="profile" element={authUser ? <Profile /> : <Navigate to="/login" replace />} />
         </Route>
-        <Route path="/room/:roomId" element={authUser ? <Room /> : <Navigate to="/login" replace />} />
+        <Route path="/room/:roomId" element={(authUser && roomDetails ) ? <Room /> : <Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to={authUser ? "/home" : "/login"} replace />} />
       </Routes>
     }
