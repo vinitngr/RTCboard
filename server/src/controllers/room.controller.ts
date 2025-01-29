@@ -6,7 +6,7 @@ export const createRoom = async (req: any, res: any) => {
     const createRoomSchema = z.object({
         roomName: z.string().min(1, { message: "Room name is required" }),
         roomPassword: z.string().min(1, { message: "Room password is required" }),
-        createdBy: z.string().min(1, { message: "CreatedBy is required" }),
+        userDetails: z.object({ fullName: z.string(), userId: z.string() }),
     });
     const validation = createRoomSchema.safeParse(req.body);
     if (!validation.success) {
@@ -15,18 +15,27 @@ export const createRoom = async (req: any, res: any) => {
 
     const id = crypto.randomBytes(6).toString('hex')
     try {
-        await client.set(`room:${id}`, JSON.stringify({ roomName , id , roomPassword , createdBy , status : "active" }) ,  "EX", 60*5 );
-        res.status(201).json({ roomId : id , status : "active" , createdBy , roomName });
+        await client.set(`room:${id}`, JSON.stringify({ id , status : "Active" , roomPassword , participants : [{ role : "creator" , ...req.body.userDetails }] , roomName }) ,  "EX", 60*10 );
+        res.status(201).json({ 
+            roomId : id ,
+            status : "Active" ,
+            participants : [
+                { role : "creator" , ...req.body.userDetails },
+                { role : "joiner" , 'userId' : '' , 'fullName' : '' }
+            ] , 
+            roomName
+        });
     } catch (error: any) {
         res.status(401).json({ message: "Failed to create room" });
     }
 }
 
 export const joinRoom = async (req: any, res: any) => {
-    const { roomId , roomPassword } = req.body;
+    const { roomId , roomPassword , userDetails } = req.body;
     const joinRoomSchema = z.object({
         roomId: z.string().min(1, { message: "RoomID required" }),
         roomPassword: z.string().min(1, { message: "Room password required" }),
+        userDetails: z.object({ fullName: z.string(), userId: z.string() }),
     });
     try {
         const validation = joinRoomSchema.safeParse(req.body);
@@ -35,15 +44,24 @@ export const joinRoom = async (req: any, res: any) => {
         }
         const room = await client.get(`room:${roomId}`);
         if(!room) {
-            res.status(401).json({ message: "Room not found" });
+            return res.status(401).json({ message: "Room not found" });
         }
         const roomData = JSON.parse(room);
-        if (roomData.status !== "active") {
+
+        roomData.participants.push(userDetails);
+        
+        if (roomData.status !== "Active") {
             res.status(401).json({ message: "Room is not active" });
         } else if (roomData.roomPassword !== roomPassword) {
             res.status(401).json({ message: "Invalid room password" });
         } else {
-            res.status(200).json({ roomId: roomId, status: "active", createdBy: roomData.createdBy, roomName: roomData.roomName });
+            await client.set(`room:${roomId}`, JSON.stringify({...roomData , status: 'Joined'}));
+            res.status(200).json({ 
+                roomId: roomId,
+                status: "Joined",
+                participants: roomData.participants,
+                roomName: roomData.roomName,
+            });
         }
     } catch (error : any) {
         res.status(401).json({ message: "Failed to join room" });
