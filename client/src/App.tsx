@@ -20,7 +20,7 @@ function App() {
     };
   
     checkAuthStatus();
-  }, [checkAuth]);
+  }, [checkAuth , authUser]);
   
   return (
     <>
@@ -31,10 +31,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout/>}>
           <Route index element={authUser ? <Home /> : <Navigate to="/login" replace />} />
-          <Route path="home" element={authUser ? <Home /> : <Navigate to="/login" replace />} />
+          <Route path="home" element={authUser ? (roomDetails ? <Navigate to={`/room/${roomDetails?.roomId}`} replace /> : <Home />) : <Navigate to="/login" replace />} />
           <Route path="login" element={!authUser ? <Login /> : <Navigate to="/home" replace /> } />
           <Route path="register" element={!authUser ? <Register /> : <Navigate to="/home" replace />} />
-          <Route path="profile" element={authUser ? <Profile /> : <Navigate to="/login" replace />} />
+          <Route path="profile" element={authUser ? (roomDetails ? <Navigate to={`/room/${roomDetails?.roomId}`} replace /> :<Profile />) : <Navigate to="/login" replace />} />
         </Route>
         <Route path="/room/:roomId" element={(authUser && roomDetails ) ? <Room /> : <Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to={authUser ? "/home" : "/login"} replace />} />

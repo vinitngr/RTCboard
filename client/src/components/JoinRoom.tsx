@@ -6,14 +6,14 @@ function JoinRoom() {
     const [joinRoomData, setJoinRoomData] = useState<{ roomId: string; roomPassword: string }>({ roomId: "", roomPassword: "" });
     const navigate = useNavigate()
 
-    const { joinRoom , roomDetails } = useRoomStore();
+    const { joinRoom } = useRoomStore();
 
     const handleJoinSubmit = async (e: React.FormEvent<HTMLFormElement>) =>{
       e.preventDefault();
       try {
-        await joinRoom(joinRoomData);
+        const roomId = await joinRoom(joinRoomData);
         setJoinRoomData({ roomId: "", roomPassword: "" });
-        navigate(`/room/${roomDetails?.roomId}`)
+        navigate(`/room/${roomId}`)
       } catch (error) {
         console.log('Error' , error);        
       }
