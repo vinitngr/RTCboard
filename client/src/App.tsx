@@ -20,7 +20,7 @@ function App() {
     };
   
     checkAuthStatus();
-  }, [checkAuth , authUser]);
+  }, [checkAuth]);
   
   return (
     <>

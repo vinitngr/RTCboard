@@ -48,8 +48,8 @@ export const joinRoom = async (req: any, res: any) => {
         const roomData = JSON.parse(room);
 
         roomData.participants.push({role : "joiner" , ...userDetails });
-        // if (roomData.status !== "Active") {
-        if (roomData.participants.length > 2) {
+        if (roomData.status !== "Active") {
+        // if (roomData.participants.length > 2) {
             return res.status(401).json({ message: "Room in Share"});
         } else if (roomData.roomPassword !== roomPassword) {
             return res.status(401).json({ message: "Invalid room password" });
@@ -74,10 +74,12 @@ export const exitRoom = async (req: any, res: any) => {
     }
     try {
         const findRoom = await client.get(`room:${roomId}`);
+
         if(!findRoom) {
             return res.status(401).json({ message : "Room does not exist"})
         }
-        const room = await client.del(`room:${roomId}`);
+
+        await client.del(`room:${roomId}`);
         res.status(200).json({ message : `Room exited successfully`})
     } catch (error : any) {
         res.status(401).json({ message : "failed to Exit"})
