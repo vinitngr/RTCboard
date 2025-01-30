@@ -2,7 +2,7 @@ import { io } from "../lib/socket";
 import { Namespace } from "socket.io";
 
 export const rtc: Namespace = io.of("/rtc");
-const userInRoom = new Map<string, string>();
+export const userInRoom = new Map<string, string>();
 
 
 rtc.on("connection", (socket) => {

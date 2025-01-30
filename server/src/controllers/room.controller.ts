@@ -1,8 +1,7 @@
 import crypto from 'crypto';
 import client from '../lib/redis';
 import { z } from 'zod';
-import { io } from '../lib/socket';
-import { rtc } from '../sockets/rtc';
+import { rtc, userInRoom } from '../sockets/rtc';
 export const createRoom = async (req: any, res: any) => {
     const { roomName , roomPassword , createdBy } = req.body;
     const createRoomSchema = z.object({
@@ -50,6 +49,7 @@ export const joinRoom = async (req: any, res: any) => {
         const roomData = JSON.parse(room);
 
         roomData.participants.push({role : "joiner" , ...userDetails });
+
         if (roomData.status !== "Active") {
         // if (roomData.participants.length > 2) {
             return res.status(401).json({ message: "Room in Share / Room already Joined"});
@@ -57,7 +57,11 @@ export const joinRoom = async (req: any, res: any) => {
             return res.status(401).json({ message: "Invalid room password" });
         } else {
             await client.set(`room:${roomId}`, JSON.stringify({ ...roomData, status: 'Joined' }), "EX", 60 * 10);
-            rtc.emit('userJoined' , {...roomData , status : 'Joined'})
+
+            const creator = roomData.participants[0].userId 
+            const creatorSocketId = userInRoom.get(creator)
+            rtc.to(creatorSocketId).emit('userJoined' , {...roomData , status : 'Joined'})
+
             res.status(200).json({
                 roomId: roomId,
                 status: "Joined",
@@ -76,12 +80,15 @@ export const exitRoom = async (req: any, res: any) => {
         return res.status(400).json({message : "RoomId required"})
     }
     try {
-        const findRoom = await client.get(`room:${roomId}`);
-        if(findRoom){
+        const room = await client.get(`room:${roomId}`);
+        if(room){
             await client.del(`room:${roomId}`);
         }
 
-        rtc.emit('userExited' , { userExited : true })
+        (JSON.parse(room) as { participants : { userId : string }[] }).participants.forEach(participant => {
+            const socketId = userInRoom.get(participant.userId)
+            rtc.to(socketId).emit('userExited' , { userExited : true })
+        });
         res.status(200).json({ message : "Room exited successfully"})
     } catch (error : any) {
         res.status(401).json({ message : "failed to Exit"})

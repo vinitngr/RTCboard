@@ -79,7 +79,11 @@ export const useRoomStore = create<RoomStore>((set , get) => ({
 
         get().socket?.on('userExited' , (data : { userExited : boolean })=>{
             console.log('data from backend', data);
+            if(data.userExited){
+                set({roomDetails : null});
+            }
         })
+        
     },
 
     disconnectSocket: () => {
