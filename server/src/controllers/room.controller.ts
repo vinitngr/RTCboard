@@ -1,6 +1,8 @@
 import crypto from 'crypto';
 import client from '../lib/redis';
 import { z } from 'zod';
+import { io } from '../lib/socket';
+import { rtc } from '../sockets/rtc';
 export const createRoom = async (req: any, res: any) => {
     const { roomName , roomPassword , createdBy } = req.body;
     const createRoomSchema = z.object({
@@ -50,11 +52,12 @@ export const joinRoom = async (req: any, res: any) => {
         roomData.participants.push({role : "joiner" , ...userDetails });
         if (roomData.status !== "Active") {
         // if (roomData.participants.length > 2) {
-            return res.status(401).json({ message: "Room in Share"});
+            return res.status(401).json({ message: "Room in Share / Room already Joined"});
         } else if (roomData.roomPassword !== roomPassword) {
             return res.status(401).json({ message: "Invalid room password" });
         } else {
             await client.set(`room:${roomId}`, JSON.stringify({ ...roomData, status: 'Joined' }), "EX", 60 * 10);
+            rtc.emit('userJoined' , {...roomData , status : 'Joined'})
             res.status(200).json({
                 roomId: roomId,
                 status: "Joined",
@@ -74,14 +77,12 @@ export const exitRoom = async (req: any, res: any) => {
     }
     try {
         const findRoom = await client.get(`room:${roomId}`);
-
-        // if(!findRoom) {
-        //     return res.status(401).json({ message : "Room does not exist"})
-        // }
         if(findRoom){
             await client.del(`room:${roomId}`);
         }
-        res.status(200).json({ message : `Room exited successfully`})
+
+        rtc.emit('userExited' , { userExited : true })
+        res.status(200).json({ message : "Room exited successfully"})
     } catch (error : any) {
         res.status(401).json({ message : "failed to Exit"})
     }

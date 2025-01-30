@@ -38,7 +38,6 @@ export const useRoomStore = create<RoomStore>((set , get) => ({
         try {
             get().connectSocket();
             const res = await axiosInstance.post("/room/join-room", { ...joinRoomData, userDetails });
-            get().socket?.emit('UserJoined', res.data);
             set({ roomDetails: res.data });
 
             return res.data?.roomId;
@@ -49,11 +48,10 @@ export const useRoomStore = create<RoomStore>((set , get) => ({
     exitRoom: async (roomId) => {
         console.log(roomId);
         try {
+
+            //TODO send participants id along with it so it can give userExisted socket messag 
             const res = await axiosInstance.delete(`/room/exit-room/${roomId}`);
             console.log(res.data);
-            get().socket?.emit('userExited', {
-                messageTo: get().roomDetails?.participants,
-            });
             set({ roomDetails : null });
             get().disconnectSocket()
         } catch (error) {
@@ -72,20 +70,20 @@ export const useRoomStore = create<RoomStore>((set , get) => ({
         });
 
         socket.connect();
+        set({ socket: socket });
 
+        get().socket?.on('userJoined' , (data)=>{
+            console.log('userJoined' , data);
+            set({roomDetails : data})
+        })
 
-        get().socket?.on('userExitedBackend' , (data)=>{
+        get().socket?.on('userExited' , (data : { userExited : boolean })=>{
             console.log('data from backend', data);
         })
-        set({ socket: socket });
-        get().socket?.emit('Test-message', 'connection Test');
     },
 
     disconnectSocket: () => {
         if (get().socket?.connected) {
-            get().socket?.emit('userDisconnected', {
-                messageTo: get().roomDetails?.participants,
-            });
             get().socket?.disconnect();
         }
     }
