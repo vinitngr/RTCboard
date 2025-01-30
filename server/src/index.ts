@@ -2,7 +2,6 @@ import { app , server } from './lib/socket';
 import express from 'express'
 import path from 'path'
 import connectDB from './lib/db';
-
 //cors
 import cors from 'cors';
 app.use(
