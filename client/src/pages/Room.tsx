@@ -5,8 +5,9 @@ export default function Room() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [, setTool] = useState("pen");
 
-  const { roomDetails , exitRoom } = useRoomStore()
+  const { roomDetails , exitRoom  } = useRoomStore()
   const [liveUser , setLiveUser] = useState(0)
+  
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     if (canvas) {
@@ -14,7 +15,7 @@ export default function Room() {
       ctx?.clearRect(0, 0, canvas.width, canvas.height);
     }
   };
-//TODO : Add live user count , use socket when user 2 join || or use continous polling
+
   useEffect(() => {
     setLiveUser(roomDetails?.participants?.length || 0);
   }, [roomDetails])

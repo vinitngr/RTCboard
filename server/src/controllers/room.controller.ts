@@ -75,11 +75,12 @@ export const exitRoom = async (req: any, res: any) => {
     try {
         const findRoom = await client.get(`room:${roomId}`);
 
-        if(!findRoom) {
-            return res.status(401).json({ message : "Room does not exist"})
+        // if(!findRoom) {
+        //     return res.status(401).json({ message : "Room does not exist"})
+        // }
+        if(findRoom){
+            await client.del(`room:${roomId}`);
         }
-
-        await client.del(`room:${roomId}`);
         res.status(200).json({ message : `Room exited successfully`})
     } catch (error : any) {
         res.status(401).json({ message : "failed to Exit"})

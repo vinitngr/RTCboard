@@ -1,3 +1,5 @@
+import { Socket } from "socket.io-client";
+
 interface AuthUser {
     _id: string;
     fullName: string;
@@ -15,8 +17,12 @@ export interface AuthStore {
 }
 
 export interface RoomStore {
+    socket: null | Socket;
     roomDetails: null | { roomId: string; roomName: string; roomPassword: string; status: string; participants: { role: string , fullName: string, userId: string }[] };
     createRoom: (roomData: { roomName: string; roomPassword: string }) => Promise<void>;
     joinRoom: (joinRoomData: { roomId: string; roomPassword: string }) => Promise<void>;
     exitRoom: (roomId: string | undefined ) => Promise<void>;
-}
+    connectSocket: () => void;
+    // userInRoom : string[] ;
+    disconnectSocket: () => void;
+    }
