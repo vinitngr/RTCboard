@@ -31,7 +31,7 @@ function JoinRoom() {
         placeholder="Enter Room ID"
         value={joinRoomData.roomId}
         onChange={(e) => setJoinRoomData({ ...joinRoomData, roomId: e.target.value })}
-        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
         />
         <input
         required
@@ -39,11 +39,11 @@ function JoinRoom() {
         placeholder="Enter Room Password"
         value={joinRoomData.roomPassword}
         onChange={(e) => setJoinRoomData({ ...joinRoomData , roomPassword: e.target.value })}
-        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
         />
         <button 
         type="submit"
-        className="w-full py-2 bg-black text-white rounded-md hover:bg-black focus:outline-none focus:ring-2 focus:ring-black">
+        className="w-full py-2 bg-yellow-400 text-white font-semibold rounded-md hover:bg-yellow-500 focus:outline-none focus:yellow-2">
         Join Room
         </button>
         </form>

@@ -1,26 +1,31 @@
-import React, { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 function Peer1() {
-  const videoRef = React.useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    async function getStream() {
+    async function playVideoFromCamera() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        videoRef.current!.srcObject = stream;
-      } catch (error) {
-        console.error(error);
+          const constraints = {'video': true, 'audio': true};
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+      } catch(error) {
+          console.error('Error opening video camera.', error);
       }
     }
-    getStream();
-  }, []);
 
-  console.log(videoRef.current?.muted);
-
+    playVideoFromCamera();
+  })
   return (
-        <div  className="h-1/2 bg-gray-800 rounded-lg flex items-center justify-center">
-            <video ref={videoRef} className="w-full h-full bg-gray-700 rounded-lg" controls  autoPlay playsInline muted ></video>
-        </div> 
+    <div
+      className="h-1/2 bg-gray-800 rounded-lg flex items-center justify-center">
+      <video  
+        ref={videoRef} 
+        className='w-full object-cover h-full bg-gray-700 rounded-lg'
+        autoPlay playsInline muted controls />
+    </div>
   )
-}
+} 
 
 export default Peer1
