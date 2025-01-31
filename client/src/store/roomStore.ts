@@ -15,14 +15,14 @@ export const useRoomStore = create<RoomStore>((set , get) => ({
 
         try {
             get().connectSocket();
-            get().socket?.on('anotherUserJoined', (data) => {
-               set({ roomDetails: data })
-            });
+            // get().socket?.on('anotherUserJoined', (data) => {
+            //     set({ roomDetails: data });
+            //     console.log('data' , get().roomDetails );
+            //     get().socket?.emit('joinSocketRoom', data.roomId);
+            // });
 
-            
             const res = await axiosInstance.post("/room/create-room", { ...roomData, userDetails });
             set({ roomDetails: res.data });
-
             return res.data?.roomId;
         } catch (error) {
             console.log("Error:", error);
@@ -38,8 +38,8 @@ export const useRoomStore = create<RoomStore>((set , get) => ({
         try {
             get().connectSocket();
             const res = await axiosInstance.post("/room/join-room", { ...joinRoomData, userDetails });
+            get().socket?.emit('joinSocketRoom' , joinRoomData.roomId);
             set({ roomDetails: res.data });
-
             return res.data?.roomId;
         } catch (error) {
             console.log("Error:", error);
@@ -48,11 +48,8 @@ export const useRoomStore = create<RoomStore>((set , get) => ({
     exitRoom: async (roomId) => {
         console.log(roomId);
         try {
-
-            //TODO send participants id along with it so it can give userExisted socket messag 
             const res = await axiosInstance.delete(`/room/exit-room/${roomId}`);
             console.log(res.data);
-            set({ roomDetails : null });
             get().disconnectSocket()
         } catch (error) {
             console.log("Error:", error);            
@@ -73,7 +70,7 @@ export const useRoomStore = create<RoomStore>((set , get) => ({
         set({ socket: socket });
 
         get().socket?.on('userJoined' , (data)=>{
-            console.log('userJoined' , data);
+            get().socket?.emit('joinSocketRoom', data.roomId);
             set({roomDetails : data})
         })
 
@@ -81,7 +78,11 @@ export const useRoomStore = create<RoomStore>((set , get) => ({
             console.log('data from backend', data);
             if(data.userExited){
                 set({roomDetails : null});
+                window.location.reload();
             }
+        })
+        get().socket?.on('just' , (data)=>{
+            console.log(data);
         })
         
     },

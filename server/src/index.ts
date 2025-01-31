@@ -32,7 +32,7 @@ app.use('/api/auth', authRoute);
 app.use('/api/room', roomRoute);
 
 //server startup
-let port : number = parseInt(process.env.PORT) || 3000;
+let port : number = parseInt(process.env.PORT) || 3001;
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
   connectDB()

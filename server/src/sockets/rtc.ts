@@ -13,6 +13,11 @@ rtc.on("connection", (socket) => {
  
   console.log(userInRoom);
 
+  socket.on("joinSocketRoom" , (roomId : string) => {
+    console.log('room Joined');
+    socket.join(roomId); 
+  })
+
   socket.on("Test-message", (message) => {
     console.log("Received message:", message);
     socket.emit("Test-message", message + 'back');

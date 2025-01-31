@@ -1,3 +1,9 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+
+  video::-webkit-media-controls-current-time-display {
+    display: none !important;
+  }
+  

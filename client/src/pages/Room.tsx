@@ -1,6 +1,8 @@
 import { Copy, Eraser, Pen, PencilLine, Save, Trash } from "lucide-react";
 import { useRoomStore } from "../store/roomStore";
 import { useEffect, useRef, useState } from "react";
+import Peer1 from "../components/Peer1";
+import Peer2 from "../components/Peer2";
 export default function Room() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [, setTool] = useState("pen");
@@ -39,13 +41,15 @@ export default function Room() {
 
   return (
     <div className="flex h-screen text-white p-6 gap-6">
-      <div className="flex flex-col w-1/3 gap-4">
-           <div  className="h-1/2 bg-gray-800 rounded-lg flex items-center justify-center">
+      <div className="flex flex-col gap-4">
+          {/* <div  className="h-1/2 bg-gray-800 rounded-lg flex items-center justify-center">
             <video className="w-full h-full bg-gray-700 rounded-lg" autoPlay muted></video>
-          </div>
-          <div className="h-1/2 bg-gray-800 rounded-lg flex items-center justify-center">
+          </div> */}
+          <Peer1/>
+          <Peer2/>
+          {/* <div className="h-1/2 bg-gray-800 rounded-lg flex items-center justify-center">
             <video className="w-full h-full bg-gray-700 rounded-lg" autoPlay muted></video>
-          </div>
+          </div> */}
 
       </div>
 

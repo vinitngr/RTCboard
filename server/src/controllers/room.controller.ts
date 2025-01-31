@@ -84,11 +84,7 @@ export const exitRoom = async (req: any, res: any) => {
         if(room){
             await client.del(`room:${roomId}`);
         }
-
-        (JSON.parse(room) as { participants : { userId : string }[] }).participants.forEach(participant => {
-            const socketId = userInRoom.get(participant.userId)
-            rtc.to(socketId).emit('userExited' , { userExited : true })
-        });
+        rtc.to((JSON.parse(room).roomId)).emit('userExited' , { userExited : true })
         res.status(200).json({ message : "Room exited successfully"})
     } catch (error : any) {
         res.status(401).json({ message : "failed to Exit"})
