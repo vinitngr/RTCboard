@@ -10,13 +10,10 @@ function JoinRoom() {
 
     const handleJoinSubmit = async (e: React.FormEvent<HTMLFormElement>) =>{
       e.preventDefault();
-      try {
         const roomId = await joinRoom(joinRoomData);
         setJoinRoomData({ roomId: "", roomPassword: "" });
         navigate(`/room/${roomId}`)
-      } catch (error) {
-        console.log('Error' , error);        
-      }
+   
     }
   return (
     <div className="w-full p-6 bg-white rounded-lg shadow-lg border border-gray-200 space-y-4">

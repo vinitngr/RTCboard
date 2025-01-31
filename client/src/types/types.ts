@@ -25,4 +25,6 @@ export interface RoomStore {
     connectSocket: () => void;
     // userInRoom : string[] ;
     disconnectSocket: () => void;
+    createOffer: ( creatorId : string ) => void;
+    createAnswer: (offer : RTCSessionDescription ) => void;
     }
