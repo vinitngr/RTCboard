@@ -18,6 +18,11 @@ rtc.on("connection", (socket) => {
     socket.join(roomId); 
   })
 
+  socket.on('userDisconnected' , (roomId : string ) => {
+    socket.to(roomId).emit('userExited' , { userExited : true });
+    // socket.leave(roomId);
+  })
+
   socket.on("Test-message", (message) => {
     console.log("Received message:", message);
     socket.emit("Test-message", message + 'back');

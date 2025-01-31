@@ -17,6 +17,9 @@ function CreateRoom() {
             console.log('Error' , error);            
         }
       }
+      window.addEventListener("beforeunload", () => {
+    });
+    
   return (
     <div className="w-full p-6 bg-white rounded-lg shadow-lg border border-gray-200 space-y-4">
             <h3 className="text-xl font-semibold text-gray-900">Create Room</h3>

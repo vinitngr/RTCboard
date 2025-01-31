@@ -15,11 +15,6 @@ export const useRoomStore = create<RoomStore>((set , get) => ({
 
         try {
             get().connectSocket();
-            // get().socket?.on('anotherUserJoined', (data) => {
-            //     set({ roomDetails: data });
-            //     console.log('data' , get().roomDetails );
-            //     get().socket?.emit('joinSocketRoom', data.roomId);
-            // });
 
             const res = await axiosInstance.post("/room/create-room", { ...roomData, userDetails });
             set({ roomDetails: res.data });
@@ -69,9 +64,13 @@ export const useRoomStore = create<RoomStore>((set , get) => ({
         socket.connect();
         set({ socket: socket });
 
+        
         get().socket?.on('userJoined' , (data)=>{
             get().socket?.emit('joinSocketRoom', data.roomId);
             set({roomDetails : data})
+            window.onbeforeunload = () => { 
+                get().socket?.emit('userDisconnected' , data.roomId);
+            }
         })
 
         get().socket?.on('userExited' , (data : { userExited : boolean })=>{
@@ -81,10 +80,6 @@ export const useRoomStore = create<RoomStore>((set , get) => ({
                 window.location.reload();
             }
         })
-        get().socket?.on('just' , (data)=>{
-            console.log(data);
-        })
-        
     },
 
     disconnectSocket: () => {

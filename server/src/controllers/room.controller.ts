@@ -60,7 +60,10 @@ export const joinRoom = async (req: any, res: any) => {
 
             const creator = roomData.participants[0].userId 
             const creatorSocketId = userInRoom.get(creator)
+            const currentUserSocketId = userInRoom.get(userDetails.userId)
+            
             rtc.to(creatorSocketId).emit('userJoined' , {...roomData , status : 'Joined'})
+            rtc.to(currentUserSocketId).emit('userJoined' , {...roomData , status : 'Joined'})
 
             res.status(200).json({
                 roomId: roomId,
