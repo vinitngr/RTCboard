@@ -3,14 +3,14 @@ import { useRoomStore } from "../store/roomStore";
 import { useEffect, useRef, useState } from "react";
 import Peer1 from "../components/Peer1";
 import Peer2 from "../components/Peer2";
-import { dc, peerConnection } from "../lib/rtc";
+import { dataChannel , peerConnection } from "../lib/rtc";
+
 export default function Room() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [, setTool] = useState("pen");
-
-  const { roomDetails, exitRoom } = useRoomStore();
   const [liveUser, setLiveUser] = useState(0);
-
+  
+  const { roomDetails, exitRoom } = useRoomStore();
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     if (canvas) {
@@ -20,6 +20,7 @@ export default function Room() {
   };
 
   useEffect(() => {
+    console.log(roomDetails);
     setLiveUser(roomDetails?.participants?.length || 0);
   }, [roomDetails]);
 
@@ -43,14 +44,11 @@ export default function Room() {
   return (
     <div className="flex h-screen text-white p-6 gap-6">
       <div className="flex flex-col gap-4">
-
         <Peer1 />
         <Peer2 />
-
       </div>
 
       <div className="flex flex-col w-2/3 gap-4">
-        <div>
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <span className="text-lg font-semibold text-black">
@@ -69,7 +67,7 @@ export default function Room() {
               Room Name : {roomDetails?.roomName}
             </div>
           </div>
-        </div>
+     
         <div className="relative flex-1 bg-gray-800 rounded-lg p-4">
           <canvas
             ref={canvasRef}
@@ -77,56 +75,45 @@ export default function Room() {
           ></canvas>
         </div>
 
-        <div className="flex justify-center gap-3 bg-gray-900 p-3 rounded-lg">
-          {[
-            { icon: <Pen />, name: "Pen" },
-            { icon: <PencilLine />, name: "Pencil" },
-            { icon: <Eraser />, name: "Eraser" },
-          ].map(({ icon, name }) => (
-            <button
-              key={name}
-              className="px-3 py-2 bg-gray-700 rounded-lg flex items-center gap-2"
-              onClick={() => setTool(name.toLowerCase())}
-            >
-              {icon} {name}
-            </button>
-          ))}
+        <div className="flex flex-wrap justify-center text-xs md:text-base gap-3 bg-gray-900 p-3 rounded-lg">
+        {[
+          { icon: <Pen />, name: "Pen" },
+          { icon: <PencilLine />, name: "Pencil" },
+          { icon: <Eraser />, name: "Eraser" },
+        ].map(({ icon, name }) => (
           <button
-            className="px-3 py-2 bg-gray-700 rounded-lg"
-            onClick={clearCanvas}
+            key={name}
+            className="px-2 py-1 bg-gray-700 rounded-lg flex items-center gap-2 "
+            onClick={() => setTool(name.toLowerCase())}
           >
-            <Trash />
+            {icon} {name}
           </button>
-          <button
-            className="px-3 py-2 bg-gray-700 rounded-lg"
-            onClick={saveCanvas}
-          >
-            <Save color="white" size={20} />
-          </button>
-          <div
-            className="bg-red-500 rounded-lg hover:cursor-pointer flex justify-center items-center p-2 justify-self-end"
-            onClick={handleDisconnect}
-          >
-            Disconnect
-          </div>
-          <div
-            onClick={() => {
-              dc.send("hi");
-              console.log(peerConnection.connectionState);
-            }}
-          >
-            check
-          </div>
+        ))}
+        
+        <button className="px-2 py-1 bg-gray-700 rounded-lg" onClick={clearCanvas}>
+          <Trash />
+        </button>
+        
+        <button className="px-2 py-1 bg-gray-700 rounded-lg" onClick={saveCanvas}>
+          <Save color="white" size={20} />
+        </button>
 
-          <div
-            onClick={() => {
-              dc.close();
-              peerConnection.close();
-            }}
-          >
-            DClose
-          </div>
-        </div>
+        <div className="bg-red-500 rounded-lg hover:cursor-pointer flex justify-center items-center p-2 sm:px-4 sm:py-2"
+          onClick={handleDisconnect}>Disconnect</div>
+
+        <div className="px-2 py-1 bg-gray-700 rounded-lg text-center cursor-pointer"
+          onClick={() => {
+            dataChannel.send("hi");
+            console.log(peerConnection.connectionState);
+          }}>Check</div>
+
+        <div className="px-2 py-1 bg-gray-700 rounded-lg text-center cursor-pointer"
+          onClick={() => {
+            dataChannel.close();
+            peerConnection.close();
+          }}>DClose</div>
+        </div>  
+
       </div>
     </div>
   );

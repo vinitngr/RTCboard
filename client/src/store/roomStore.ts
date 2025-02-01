@@ -3,9 +3,7 @@ import { axiosInstance } from "../lib/axiosinstance";
 import { useAuthStore } from "./authStore";
 import { RoomStore } from "../types/types";
 import { io } from "socket.io-client";
-import { makeCall } from "../lib/rtc";
-import { RTCcreateAnswer } from "../lib/rtc";
-import { peerConnection } from "../lib/rtc";
+import { RTCcreateAnswer , peerConnection , makeCall} from "../lib/rtc";
 
 
 export const useRoomStore = create<RoomStore>((set, get) => ({
@@ -23,6 +21,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
                 ...roomData, 
                 userDetails: userDetails
             });
+            get().socket?.emit('joinSocketRoom', userDetails.userId);
             set({ roomDetails: res.data });
             return res.data?.roomId;
         } catch (error) {
@@ -42,8 +41,8 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
                 ...joinRoomData, 
                 userDetails: userDetails
             });
-            get().socket?.emit('joinSocketRoom', joinRoomData.roomId);
-            set({ roomDetails: res.data });
+            //send offer to creator
+            set({ roomDetails: res.data }); //user socket handling it optional
             get().createOffer(res.data.participants[0].userId);
             return res.data?.roomId;
         } catch (error) {
@@ -56,8 +55,9 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     exitRoom: async (roomId) => {
         try {
             await axiosInstance.delete(`/room/exit-room/${roomId}`);
-            get().disconnectSocket();
+            // get().disconnectSocket();
             // set({ roomDetails: null });
+            // window.location.reload();
         } catch (error) {
             console.error("Error exiting room:", error);
         }
@@ -80,29 +80,26 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
         });
 
         socket.on('userJoined', (data) => {
-            socket.emit('joinSocketRoom', data.roomId);
+            get().socket?.emit('joinSocketRoom', data.participants[0].userId);
+            console.log('dat room details changing a');
             set({ roomDetails: data });
         });
 
         socket.on('userExited', (data) => {
             if (data.userExited) {
-                set({ roomDetails: null });
-                window.location.reload();
+                get().disconnectSocket(); //optinal
+                peerConnection.close() //optional 
+                window.location.reload(); //reload as video steam
+                set({ roomDetails: null }); //optional
             }
         });
 
         socket.on('RTCoffer', (data: { offer: RTCSessionDescription }) => {
             get().createAnswer(data.offer);
-
-
         });
  
         socket.on('RTCanswer' ,async (data)=>{
             await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer.answer));
-            // console.log(peerConnection.localDescription);
-            // console.log(peerConnection.remoteDescription);
-            console.log(peerConnection.connectionState);
-
         })
 
         socket.on('new-ice-candidate', async (data) => {
@@ -131,7 +128,11 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     createOffer: async (creatorId) => {
         try {
             const socket = get().socket;
-            if (socket) await makeCall(socket, creatorId);
+            if (socket) {
+                const offer = await makeCall(socket, creatorId);
+                await peerConnection.setLocalDescription(offer);
+                socket.emit('RTCoffer', { offer, creatorId });
+            }
         } catch (error) {
             console.error("Error creating offer:", error);
         }
@@ -139,10 +140,12 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
 
     createAnswer: async (offer) => {
         try {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
             const socket = get().socket!;
-            await RTCcreateAnswer(offer, socket, get().roomDetails?.participants[1].userId);
-            // console.log(peerConnection.localDescription);
-            // console.log(peerConnection.remoteDescription);
+            const answer = await RTCcreateAnswer(socket , get().roomDetails?.participants[1].userId);
+            await peerConnection.setLocalDescription(answer);
+            
+            socket.emit('RTCanswer' , {answer , joinerId : get().roomDetails?.participants[1].userId});
         } catch (error) {
             console.error("Error creating answer:", error);
         }

@@ -28,25 +28,26 @@ rtc.on("connection", (socket) => {
     socket.emit("Test-message", message + 'back');
   })
 
-  socket.on("disconnect", () => {
-    console.log("A user disconnected", socket.id);
-    userInRoom.delete(userId); 
-    console.log(userInRoom);
-  });
-
+  
   socket.on("RTCoffer" , async (data : {offer : RTCSessionDescription , creatorId : string}) => {
     const creatorSocketId = userInRoom.get(data.creatorId)
     socket.to(creatorSocketId).emit("RTCoffer" , { offer : data.offer });
   })
-
+  
   socket.on("RTCanswer" , (data : {answer : RTCSessionDescription , joinerId : string}) => {
     const senderSocketId = userInRoom.get(data.joinerId)
     socket.to(senderSocketId).emit("RTCanswer" , { answer : data });
   })
-
+  
   socket.on('new-ice-candidate' , (candidate) => {
     console.log('Ice candidate gathering server-side');
     const creatorSocketId = userInRoom.get(candidate.id)
     socket.to(creatorSocketId).emit('new-ice-candidate' , candidate);
   })
+  
+  socket.on("disconnect", () => {
+    console.log("A user disconnected", socket.id);
+    userInRoom.delete(userId); 
+    console.log(userInRoom);
+  });
 })

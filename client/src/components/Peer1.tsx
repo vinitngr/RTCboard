@@ -23,7 +23,7 @@ function Peer1() {
       <video  
         ref={videoRef} 
         className='w-full object-cover h-full bg-gray-700 rounded-lg'
-        autoPlay playsInline muted controls />
+        autoPlay playsInline muted controls >ddsfsgdsgads</video>
     </div>
   )
 } 

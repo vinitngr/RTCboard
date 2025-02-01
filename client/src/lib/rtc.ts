@@ -5,8 +5,8 @@
             {'urls': 'stun:stun.l.google.com:19302'}
         ]
     }
-    export const peerConnection = new RTCPeerConnection(configuration);
-    export const dc = peerConnection.createDataChannel('chat');
+    export const peerConnection : RTCPeerConnection = new RTCPeerConnection(configuration);
+    export const dataChannel: RTCDataChannel = peerConnection.createDataChannel('chat');
 
 
     peerConnection.oniceconnectionstatechange = () => {
@@ -22,51 +22,46 @@
             console.log('Received message:', data);
         };
         channel.onopen = () => console.log('Data channel opened');
-        channel.onclose = () => console.log('Data channel closed');
+        channel.onclose = () => {
+            window.location.reload()
+        };
     };
-    dc.onmessage = ({ data }) => {
+    dataChannel.onmessage = ({ data }) => {
         console.log('Received message:', data);
     }
 
-    dc.onopen = () => {
-        console.log('Data Channel Open:', dc.readyState);
-        if (dc.readyState === 'open') {
-            dc.send('hi');
+    dataChannel.onopen = () => {
+        console.log('Data Channel Open:', dataChannel.readyState);
+        if (dataChannel.readyState === 'open') {
+            dataChannel.send('hi');
         }
     };
     
     export const makeCall = async (socket: Socket, creatorId: string) => {
         try {
             const offer = await peerConnection.createOffer();
-            await peerConnection.setLocalDescription(offer);
-            
             peerConnection.onicecandidate =  (event) => {
                 if (event.candidate && peerConnection.iceConnectionState !== 'connected' && peerConnection.iceConnectionState !== 'completed') {
                     socket.emit('new-ice-candidate', { ice: event.candidate, id: creatorId });
                 }
             };
-            
-
-            socket.emit('RTCoffer', { offer, creatorId });
+            return offer;
         } catch (error) {
             console.warn('Error during makeCall:', error);
         }
     };
 
-    export const RTCcreateAnswer = async (offer : RTCSessionDescription , socket: Socket , joinerId : string | undefined) =>{
+    export const RTCcreateAnswer = async (socket : Socket , joinerId : string | undefined) =>{
         try {
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-
             const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-
-            socket.emit('RTCanswer' , {answer , joinerId : joinerId});
 
             peerConnection.onicecandidate = (event) => {
                 if (event.candidate && peerConnection.iceConnectionState !== 'connected' && peerConnection.iceConnectionState !== 'completed') {
                     socket.emit('new-ice-candidate', { ice: event.candidate, id: joinerId });
                 }
-            };}
+            };
+            return answer
+        }
         catch(error){
             console.warn('Error during RTCcreateAnswer:', error);
         }

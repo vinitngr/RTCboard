@@ -51,7 +51,6 @@ export const joinRoom = async (req: any, res: any) => {
         roomData.participants.push({role : "joiner" , ...userDetails });
 
         if (roomData.status !== "Active") {
-        // if (roomData.participants.length > 2) {
             return res.status(401).json({ message: "Room in Share / Room already Joined"});
         } else if (roomData.roomPassword !== roomPassword) {
             return res.status(401).json({ message: "Invalid room password" });
@@ -64,7 +63,6 @@ export const joinRoom = async (req: any, res: any) => {
             
             rtc.to(creatorSocketId).emit('userJoined' , {...roomData , status : 'Joined'})
             rtc.to(currentUserSocketId).emit('userJoined' , {...roomData , status : 'Joined'})
-
             res.status(200).json({
                 roomId: roomId,
                 status: "Joined",
@@ -87,7 +85,7 @@ export const exitRoom = async (req: any, res: any) => {
         if(room){
             await client.del(`room:${roomId}`);
         }
-        rtc.to((JSON.parse(room).roomId)).emit('userExited' , { userExited : true })
+        rtc.to((JSON.parse(room).participants[0].userId)).emit('userExited' , { userExited : true })
         res.status(200).json({ message : "Room exited successfully"})
     } catch (error : any) {
         res.status(401).json({ message : "failed to Exit"})
