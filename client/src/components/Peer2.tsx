@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 function Peer2() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null)
 
   useEffect(() => {
     async function playVideoFromCamera() {
@@ -9,6 +10,7 @@ function Peer2() {
           const stream = await navigator.mediaDevices.getUserMedia(constraints);
           if (videoRef.current) {
             videoRef.current.srcObject = stream;
+            streamRef.current = stream
           }
       } catch(error) {
           console.error('Error opening video camera.', error);
@@ -16,7 +18,12 @@ function Peer2() {
     }
 
     playVideoFromCamera();
-  })
+
+    return () => {
+      const stream = streamRef.current;
+      stream?.getTracks().forEach((track) => track.stop());
+    }
+  }, [])
   return (
     <div
       className="h-1/2 bg-gray-800 rounded-lg flex items-center justify-center">

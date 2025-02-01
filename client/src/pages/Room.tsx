@@ -19,6 +19,17 @@ export default function Room() {
     }
   };
 
+  peerConnection.ondatachannel = (event) => {
+    const channel = event.channel;
+    channel.onmessage = ({ data }) => {
+        console.log('Received message:', data);
+    };
+    channel.onopen = () => console.log('Data channel opened');
+    channel.onclose = () => {
+        exitRoom(roomDetails?.roomId)
+    };
+};
+
   useEffect(() => {
     console.log(roomDetails);
     setLiveUser(roomDetails?.participants?.length || 0);

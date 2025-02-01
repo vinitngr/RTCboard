@@ -7,35 +7,24 @@
     }
     export const peerConnection : RTCPeerConnection = new RTCPeerConnection(configuration);
     export const dataChannel: RTCDataChannel = peerConnection.createDataChannel('chat');
-
-
+    
     peerConnection.oniceconnectionstatechange = () => {
         console.log('ICE connection state changed = ', peerConnection.iceConnectionState);
         if (peerConnection.iceConnectionState === 'connected' || peerConnection.iceConnectionState === 'completed') {
             console.log('ICE connection established');
         }
     };
-    
-    peerConnection.ondatachannel = (event) => {
-        const channel = event.channel;
-        channel.onmessage = ({ data }) => {
-            console.log('Received message:', data);
-        };
-        channel.onopen = () => console.log('Data channel opened');
-        channel.onclose = () => {
-            window.location.reload()
-        };
-    };
-    dataChannel.onmessage = ({ data }) => {
-        console.log('Received message:', data);
-    }
 
-    dataChannel.onopen = () => {
-        console.log('Data Channel Open:', dataChannel.readyState);
-        if (dataChannel.readyState === 'open') {
-            dataChannel.send('hi');
-        }
-    };
+    // dataChannel.onmessage = ({ data }) => {
+    //     console.log('Received message:', data);
+    // }
+
+    // dataChannel.onopen = () => {
+    //     console.log('Data Channel Open:', dataChannel.readyState);
+    //     if (dataChannel.readyState === 'open') {
+    //         dataChannel.send('hi');
+    //     }
+    // };
     
     export const makeCall = async (socket: Socket, creatorId: string) => {
         try {

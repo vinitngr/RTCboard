@@ -81,16 +81,18 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
 
         socket.on('userJoined', (data) => {
             get().socket?.emit('joinSocketRoom', data.participants[0].userId);
-            console.log('dat room details changing a');
             set({ roomDetails: data });
         });
 
         socket.on('userExited', (data) => {
             if (data.userExited) {
-                get().disconnectSocket(); //optinal
-                peerConnection.close() //optional 
-                window.location.reload(); //reload as video steam
-                set({ roomDetails: null }); //optional
+                //imposter       media device is not stopping on component unmount 
+                window.location.reload();
+                
+                //optional
+                get().disconnectSocket(); 
+                peerConnection.close() 
+                set({ roomDetails: null });
             }
         });
 
