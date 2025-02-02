@@ -28,10 +28,15 @@ export default function Room() {
     channel.onclose = () => {
         exitRoom(roomDetails?.roomId)
     };
+    
 };
+  useEffect(() => {
+  },[])
+  peerConnection.ontrack = async () => {
+    console.log('received track');
+   }
 
   useEffect(() => {
-    console.log(roomDetails);
     setLiveUser(roomDetails?.participants?.length || 0);
   }, [roomDetails]);
 

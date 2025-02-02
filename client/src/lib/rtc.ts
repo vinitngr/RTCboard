@@ -25,6 +25,10 @@
     //         dataChannel.send('hi');
     //     }
     // };
+    peerConnection.onnegotiationneeded = async () => {
+            console.log('nego needed');
+    }
+    
     
     export const makeCall = async (socket: Socket, creatorId: string) => {
         try {

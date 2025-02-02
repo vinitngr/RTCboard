@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { peerConnection } from '../lib/rtc';
 function Peer1() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null)
@@ -7,10 +8,22 @@ function Peer1() {
       try {
           const constraints = {'video': true, 'audio': true};
           const stream = await navigator.mediaDevices.getUserMedia(constraints);
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-            streamRef.current = stream
-          }
+          stream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, stream);
+          });
+
+          peerConnection.ontrack = async (event) => {
+            console.log('received track');
+            const [remoteStream] = event.streams;
+            if(videoRef.current){
+              videoRef.current!.srcObject = remoteStream;
+            }
+           }
+          // if (videoRef.current) {
+          //   videoRef.current.srcObject = stream;
+          //   streamRef.current = stream
+          // }
+          
       } catch(error) {
           console.error('Error opening video camera.', error);
       }
