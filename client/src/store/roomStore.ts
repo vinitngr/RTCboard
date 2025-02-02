@@ -3,13 +3,12 @@ import { axiosInstance } from "../lib/axiosinstance";
 import { useAuthStore } from "./authStore";
 import { RoomStore } from "../types/types";
 import { io } from "socket.io-client";
-import { RTCcreateAnswer , peerConnection , makeCall} from "../lib/rtc";
-
+import { PeerConnection  } from "../lib/rtc";
 
 export const useRoomStore = create<RoomStore>((set, get) => ({
     socket: null,
     roomDetails: null,
-
+    connection : null ,
     createRoom: async (roomData) => {
         const userDetails: { userId: string | undefined , fullName: string | undefined } = {
             fullName: useAuthStore.getState().authUser?.fullName,
@@ -41,8 +40,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
                 ...joinRoomData, 
                 userDetails: userDetails
             });
-            //send offer to creator
-            set({ roomDetails: res.data }); //user socket handling it optional
+            set({ roomDetails: res.data }); 
             get().createOffer(res.data.participants[0].userId);
             return res.data?.roomId;
         } catch (error) {
@@ -55,9 +53,6 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     exitRoom: async (roomId) => {
         try {
             await axiosInstance.delete(`/room/exit-room/${roomId}`);
-            // get().disconnectSocket();
-            // set({ roomDetails: null });
-            // window.location.reload();
         } catch (error) {
             console.error("Error exiting room:", error);
         }
@@ -86,12 +81,9 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
 
         socket.on('userExited', (data) => {
             if (data.userExited) {
-                //imposter       media device is not stopping on component unmount 
                 window.location.reload();
-                
-                //optional
                 get().disconnectSocket(); 
-                peerConnection.close() 
+                get().connection?.peerConnection.close() 
                 set({ roomDetails: null });
             }
         });
@@ -101,13 +93,16 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
         });
  
         socket.on('RTCanswer' ,async (data)=>{
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer.answer));
+            await get().connection?.peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer.answer));
+
         })
 
         socket.on('new-ice-candidate', async (data) => {
-            if (data.ice && peerConnection.iceConnectionState !== 'connected' && peerConnection.iceConnectionState !== 'completed') {
+            console.log(data);
+            if (data.ice && get().connection?.peerConnection.iceConnectionState !== 'connected' && get().connection?.peerConnection.iceConnectionState !== 'completed') {
                 try {
-                    await peerConnection.addIceCandidate(data.ice);
+                    await get().connection?.peerConnection.addIceCandidate(data.ice);
+                    console.log(get().connection?.peerConnection.iceConnectionState);
                 } catch (error) {
                     console.error('Failed to add ICE candidate:', error);
                 }
@@ -130,26 +125,44 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     createOffer: async (creatorId) => {
         try {
             const socket = get().socket;
-            if (socket) {
-                const offer = await makeCall(socket, creatorId);
-                await peerConnection.setLocalDescription(offer);
-                socket.emit('RTCoffer', { offer, creatorId });
+            if (!socket) return;
+    
+            if (!get().connection?.peerConnection) {
+                set({ connection: PeerConnection().getInstance() });
             }
+            get().connection!.peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    socket.emit("new-ice-candidate", { ice: event.candidate , id : get().roomDetails?.participants[0].userId });
+                }
+            }
+            const offer = await get().connection?.peerConnection.createOffer();
+            await get().connection?.peerConnection.setLocalDescription(offer);
+            socket.emit("RTCoffer", { offer, creatorId });
         } catch (error) {
             console.error("Error creating offer:", error);
         }
     },
-
+    
     createAnswer: async (offer) => {
         try {
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-            const socket = get().socket!;
-            const answer = await RTCcreateAnswer(socket , get().roomDetails?.participants[1].userId);
-            await peerConnection.setLocalDescription(answer);
-            
-            socket.emit('RTCanswer' , {answer , joinerId : get().roomDetails?.participants[1].userId});
+            const socket = get().socket;
+            if (!socket) return;
+    
+            if (!get().connection?.peerConnection) {
+                set({ connection: PeerConnection().getInstance() });
+            }
+            get().connection!.peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    socket.emit("new-ice-candidate", { ice: event.candidate , id : get().roomDetails?.participants[0].userId });
+                }
+            }
+            await get().connection?.peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+            const answer = await get().connection?.peerConnection.createAnswer();
+            await get().connection?.peerConnection.setLocalDescription(answer);
+            socket.emit('RTCanswer', { answer, joinerId: get().roomDetails?.participants[1].userId });
         } catch (error) {
             console.error("Error creating answer:", error);
         }
     },
+    
 }));

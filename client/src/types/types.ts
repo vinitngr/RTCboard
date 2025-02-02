@@ -17,6 +17,7 @@ export interface AuthStore {
 }
 
 export interface RoomStore {
+    connection : null | { peerConnection: RTCPeerConnection; dataChannel: RTCDataChannel };
     socket: null | Socket;
     roomDetails: null | { roomId: string; roomName: string; roomPassword: string; status: string; participants: { role: string , fullName: string, userId: string }[] };
     createRoom: (roomData: { roomName: string; roomPassword: string }) => Promise<void>;

@@ -3,14 +3,17 @@ import { useRoomStore } from "../store/roomStore";
 import { useEffect, useRef, useState } from "react";
 import Peer1 from "../components/Peer1";
 import Peer2 from "../components/Peer2";
-import { dataChannel , peerConnection } from "../lib/rtc";
+
+// import { dataChannel , peerConnection } from "../lib/rtc";
 
 export default function Room() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [, setTool] = useState("pen");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [ , setTool] = useState("pen");
   const [liveUser, setLiveUser] = useState(0);
   
-  const { roomDetails, exitRoom } = useRoomStore();
+  const { roomDetails, exitRoom , connection } = useRoomStore();
+
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     if (canvas) {
@@ -18,23 +21,26 @@ export default function Room() {
       ctx?.clearRect(0, 0, canvas.width, canvas.height);
     }
   };
-
-  peerConnection.ondatachannel = (event) => {
-    const channel = event.channel;
-    channel.onmessage = ({ data }) => {
-        console.log('Received message:', data);
-    };
-    channel.onopen = () => console.log('Data channel opened');
-    channel.onclose = () => {
-        exitRoom(roomDetails?.roomId)
-    };
-    
-};
   useEffect(() => {
-  },[])
-  peerConnection.ontrack = async () => {
-    console.log('received track');
-   }
+    if (connection && connection.peerConnection) {
+
+      connection.peerConnection.ontrack = async () => {
+        console.log('received track');
+      }
+     
+      const dataChannelHandler = (event : RTCDataChannelEvent) => {
+      const channel = event.channel;
+      channel.onmessage = ({ data }) => {console.log('Received message:', data);};
+      channel.onopen = () => console.log('Data channel opened');
+      channel.onclose = () => exitRoom(roomDetails?.roomId);
+      };
+
+      connection.peerConnection.ondatachannel = dataChannelHandler;
+    }
+
+    }, [connection, exitRoom, roomDetails]);
+    
+  
 
   useEffect(() => {
     setLiveUser(roomDetails?.participants?.length || 0);
@@ -119,14 +125,14 @@ export default function Room() {
 
         <div className="px-2 py-1 bg-gray-700 rounded-lg text-center cursor-pointer"
           onClick={() => {
-            dataChannel.send("hi");
-            console.log(peerConnection.connectionState);
+            connection?.dataChannel.send("hi");
+            console.log(connection?.peerConnection.connectionState);
           }}>Check</div>
 
         <div className="px-2 py-1 bg-gray-700 rounded-lg text-center cursor-pointer"
           onClick={() => {
-            dataChannel.close();
-            peerConnection.close();
+            connection?.dataChannel.close();
+            connection?.dataChannel.close();
           }}>DClose</div>
         </div>  
 
