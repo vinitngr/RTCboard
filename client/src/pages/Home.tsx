@@ -1,6 +1,5 @@
 import CreateRoom from "../components/CreateRoom";
 import JoinRoom from "../components/JoinRoom";
-import { PeerConnection } from "../lib/rtc";
 function Home() {
   return (
     <div className="bg-gray-50 py-8">

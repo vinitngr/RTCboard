@@ -7,3 +7,10 @@
     display: none !important;
   }
   
+
+  ::selection {
+    background: black;
+    color: white;
+  }
+
+  
