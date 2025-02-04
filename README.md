@@ -17,7 +17,7 @@ This is a real-time collaboration platform built with **WebRTC, Node.js, React, 
 
 ## Installation
 ### Prerequisites
-Ensure you have **Node.js**, **npm**, and **Redis** installed.
+Ensure you have Node.js, npm , and Redis installed. You can also use online Redis services like Upstash instead of running a local Redis server. If you are using Windows, consider setting up WSL (Windows Subsystem for Linux) for better compatibility.
 
 ### Setup
 #### 1. Clone the repository:
@@ -41,7 +41,9 @@ npm install
 #### 3. Start the application:
 ##### Start Redis:
 ```sh
-redis-server | sudo systemctl start redis-server
+redis-server 
+#or
+sudo systemctl start redis-server #background
 ```
 ##### Run backend:
 ```sh
