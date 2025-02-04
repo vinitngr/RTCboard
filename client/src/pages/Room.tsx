@@ -13,11 +13,12 @@ export default function Room() {
         const channel = event.channel;
         channel.onmessage = ({ data }) => {console.log('Received message', data);};
         channel.onopen = () => console.log('Data channel opened');
-        channel.onclose = () => {
+        channel.onclose = () => { 
           console.log('data channel closed');
           if(connection){
             connection.peerConnection.close()
             connection.dataChannel.close()
+            window.location.reload()
           }
           exitRoom(roomDetails?.roomId)
         };
