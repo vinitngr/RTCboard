@@ -1,84 +1,51 @@
-import { useState } from "react";
-import { useAuthStore } from "../store/authStore";
-import { Grid, List } from "lucide-react";
+import { Mail, Calendar } from 'lucide-react';
+import { useAuthStore } from '../store/authStore';
 
 function Profile() {
-  const [viewMode, setViewMode] = useState("grid");
 
   const {authUser} = useAuthStore();
-  // Sample data
-
-
-  const rooms = [
-    {
-      name: "Room 1",
-      status: "active",
-      startedAt: "2025-01-28 10:00 AM",
-    },
-    {
-      name: "Room 2",
-      status: "ended",
-      startedAt: "2025-01-27 03:00 PM",
-    },
-    {
-      name: "Room 3",
-      status: "ended",
-      startedAt: "2025-01-26 02:00 PM",
-    },
-  ];
+  const user = {
+    name: 'Sarah Anderson',
+    email: 'sarah.anderson@example.com',
+    phone: '+1 (555) 123-4567',
+    location: 'San Francisco, CA',
+    role: 'Senior Product Designer',
+    joinDate: 'January 2023',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80'
+  };
 
   return (
-    <div className=" bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6 space-y-8">
-        <div className="flex justify-between gap-5 items-center mx-10 flex-col sm:flex-row">
+    <div className="flex flex-col flex-grow">
+      <div className=" mx-auto w-[50vw] mt-10 bg-[#101013]">
+        
+        <div className="bg-zinc-900/50 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] border border-zinc-800/50 overflow-hidden">
           
-          <img
-            src={authUser?.profilepic}
-            alt="Profile"
-            className="size-32 rounded-full overflow-hidden"
-          />
-          <div className="text-center">
-              <h2 className="text-3xl font-semibold text-gray-900">Profile</h2>
-              <div className="mt-4 text-lg text-gray-700">
-                <p><strong>Name:</strong> {authUser?.fullName}</p>
-                <p><strong>Email:</strong> {authUser?.email}</p>
-                <p><strong>Joined:</strong> {new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric' }).format(new Date(authUser?.createdAt || ''))}</p>
+          <div className="px-8 pt-8 pb-6">
+            
+            <div className="flex items-center space-x-6">
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="w-24 h-24 rounded-full border-4 border-zinc-800"
+              />
+              <div>
+                <h1 className="text-2xl font-bold text-white">{authUser?.fullName}</h1>
+                <p className="text-zinc-400">{user.role}</p>
               </div>
-          </div>
-        </div>
-
-        <div className="mt-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold text-gray-900">Your Rooms</h3>
-            <div className="gap-4 flex">
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`px-4 py-1 rounded-lg ${viewMode === "grid" ? "bg-black text-white" : "bg-gray-200"}`}
-              >
-                <Grid size={18}/>
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={`px-4 py-1 rounded-lg ${viewMode === "list" ? "bg-black text-white" : "bg-gray-200"}`}
-              >
-                <List size={18}/>
-              </button>
             </div>
           </div>
 
-          <div className={viewMode === "grid" ? "grid grid-cols-1 mb:grid-cols-2 lg:grid-cols-3 gap-6 mt-4" : "space-y-4 mt-4"}>
-            {rooms.map((room, index) => (
-              <div key={index} className="p-4 bg-white rounded-lg shadow-md">
-                <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-lg font-semibold text-gray-900">{room.name}</h4>
-                    <p className={`text-sm font-semibold w-fit px-3 rounded-full ${room.status === "active" ? "text-green-600 bg-green-200" : "text-red-600 bg-red-200"}`}>
-                      {room.status === "active" ? "Active" : "Ended"}
-                    </p>
-                </div>
-                <p className="text-sm text-gray-600">Started: {room.startedAt}</p>
-                
-              </div>
-            ))}
+          <div className="border-t border-zinc-800/50 px-8 py-6 space-y-4">
+            <div className="flex items-center space-x-3 text-zinc-300">
+              <Mail className="w-5 h-5 text-zinc-400" />
+              <span>{user.email}</span>
+            </div>
+            <div className="flex items-center space-x-3 text-zinc-300">
+              <Calendar className="w-5 h-5 text-zinc-400" />
+              <span>
+                Joined {authUser?.createdAt ? new Date(authUser?.createdAt).toLocaleString('default', { month: 'long', day: 'numeric' }) : ''}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -86,4 +53,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default Profile

@@ -9,6 +9,7 @@ import Profile from "./pages/Profile"
 import Room from "./pages/Room"
 import Layout from "./components/Layout"
 import { useRoomStore } from "./store/roomStore"
+import Meetings from "./pages/Meething"
 function App() {
   const [isloading , setisloading] = useState(true) 
   const { checkAuth , authUser } = useAuthStore()
@@ -35,6 +36,7 @@ function App() {
           <Route path="login" element={!authUser ? <Login /> : <Navigate to="/home" replace /> } />
           <Route path="register" element={!authUser ? <Register /> : <Navigate to="/home" replace />} />
           <Route path="profile" element={authUser ? (roomDetails ? <Navigate to={`/room/${roomDetails?.roomId}`} replace /> :<Profile />) : <Navigate to="/login" replace />} />
+          <Route path="meetings" element={authUser ? (roomDetails ? <Navigate to={`/room/${roomDetails?.roomId}`} replace /> :<Meetings />) : <Navigate to="/login" replace />} />
         </Route>
         <Route path="/room/:roomId" element={(authUser && roomDetails ) ? <Room /> : <Navigate to="/login" replace />} />
         <Route path="*" element={<Navigate to={authUser ? "/home" : "/login"} replace />} />

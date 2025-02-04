@@ -34,7 +34,7 @@ export default function Room() {
     }, [connection, exitRoom, roomDetails?.roomId]);
 
   return (
-    <div className="flex h-screen text-white p-6 gap-6">
+    <div className="flex h-screen text-white p-6 gap-6" style={{'backgroundColor': 'white'}}>
       <div className="flex flex-col gap-4">
         <Peer1 />
         <Peer2 />

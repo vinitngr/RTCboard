@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useRoomStore } from '../store/roomStore';
 import { useNavigate } from 'react-router-dom';
+import { Hash, KeyRound } from 'lucide-react';
 
 function JoinRoom() {
     const [joinRoomData, setJoinRoomData] = useState<{ roomId: string; roomPassword: string }>({ roomId: "", roomPassword: "" });
@@ -15,37 +16,52 @@ function JoinRoom() {
         navigate(`/room/${roomId}`)
    
     }
-  return (
-    <div className="w-full p-6 bg-white rounded-lg shadow-lg border border-gray-200 space-y-4">
-        <h3 className="text-xl font-semibold text-gray-900">Join Room</h3>
-        <form
-        className="w-full p-6 bg-white rounded-lg shadow-lg border border-gray-200 space-y-4"
-        onSubmit={handleJoinSubmit}
-        >
-        <input
-        required
-        type="text"
-        placeholder="Enter Room ID"
-        value={joinRoomData.roomId}
-        onChange={(e) => setJoinRoomData({ ...joinRoomData, roomId: e.target.value })}
-        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
-        />
-        <input
-        required
-        type="text"
-        placeholder="Enter Room Password"
-        value={joinRoomData.roomPassword}
-        onChange={(e) => setJoinRoomData({ ...joinRoomData , roomPassword: e.target.value })}
-        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
-        />
-        <button 
-        type="submit"
-        className="w-full py-2 bg-yellow-400 text-white font-semibold rounded-md hover:bg-yellow-500 focus:outline-none focus:yellow-2">
-        Join Room
-        </button>
-        </form>
-    </div>
-  )
+    return (
+      <div>
+          <form onSubmit={handleJoinSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-zinc-300 text-sm font-medium pl-1">Room Id</label>
+              <div className="relative">
+                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5" />
+                <input
+                  type="text"
+                  value={joinRoomData.roomId}
+                  onChange={(e) => setJoinRoomData({ ...joinRoomData, roomId: e.target.value })}
+                  
+                  className="w-full bg-zinc-800/50 border border-zinc-700 rounded-xl px-12 py-3 text-white placeholder-zinc-500
+                    focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-600
+                    transition-all duration-300 hover:bg-zinc-800/70"
+                  placeholder="Enter room id"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-zinc-300 text-sm font-medium pl-1">Room Password</label>
+              <div className="relative">
+                <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 w-5 h-5" />
+                <input
+                  type="password"
+                  value={joinRoomData.roomPassword}
+                  onChange={(e) => setJoinRoomData({ ...joinRoomData, roomPassword: e.target.value })}
+                  className="w-full bg-zinc-800/50 border border-zinc-700 rounded-xl px-12 py-3 text-white placeholder-zinc-500
+                    focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-600
+                    transition-all duration-300 hover:bg-zinc-800/70"
+                  placeholder="Enter room password"
+                />
+              </div>
+            </div>
+            <button
+              type="submit"
+              className="w-full mt-8 bg-white text-zinc-900 py-3 px-6 rounded-xl font-medium
+                transform transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-white/10
+                focus:outline-none focus:ring-2 focus:ring-white/20 active:scale-[0.98]"
+            >
+              Join Room
+            </button>
+          </form>
+      </div>
+    )
+  
 }
 
 export default JoinRoom
