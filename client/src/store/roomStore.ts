@@ -80,11 +80,13 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
         });
 
         socket.on('userExited', (data) => {
+            console.log(get().connection);
             if (data.userExited) {
                 window.location.reload();
-                get().disconnectSocket(); 
-                get().connection?.peerConnection.close() 
+                get().disconnectSocket();
                 set({ roomDetails: null });
+                // get().connection?.dataChannel.close() // 
+                // get().connection?.peerConnection.close()  //
             }
         });
 
@@ -132,9 +134,9 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
             }
             get().connection!.peerConnection.onicecandidate = (event) => {
                 if (event.candidate) {
-                    socket.emit("new-ice-candidate", { ice: event.candidate , id : get().roomDetails?.participants[0].userId });
+                  socket.emit("new-ice-candidate", { ice: event.candidate, id: get().roomDetails?.participants[0].userId });
                 }
-            }
+              };
             const offer = await get().connection?.peerConnection.createOffer();
             await get().connection?.peerConnection.setLocalDescription(offer);
             socket.emit("RTCoffer", { offer, creatorId });

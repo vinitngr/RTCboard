@@ -26,3 +26,6 @@ dist-ssr
 .env.local
 .env 
 issues.md
+client/src/pages/done.ts
+client/src/pages/Roomworking.tsx
+client/src/store/videoStore.ts
