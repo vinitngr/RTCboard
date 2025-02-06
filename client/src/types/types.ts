@@ -5,7 +5,8 @@ interface AuthUser {
     fullName: string;
     email: string;
     profilepic : string;
-    createdAt : Date
+    createdAt : Date;
+    role: string
 }
   
 export interface AuthStore {

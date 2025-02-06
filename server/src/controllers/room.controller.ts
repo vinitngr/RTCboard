@@ -55,7 +55,7 @@ export const joinRoom = async (req: any, res: any) => {
         } else if (roomData.roomPassword !== roomPassword) {
             return res.status(401).json({ message: "Invalid room password" });
         } else {
-            await client.set(`room:${roomId}`, JSON.stringify({ ...roomData, status: 'Joined' }), "EX", 60 * 10);
+            await client.set(`room:${roomId}`, JSON.stringify({ ...roomData, status: 'Joined' }), "EX", 60 * 30);
 
             const creator = roomData.participants[0].userId 
             const creatorSocketId = userInRoom.get(creator)

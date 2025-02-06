@@ -7,18 +7,12 @@ function Peer1() {
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [negotiationInProgress, setNegotiationInProgress] = useState(false);
   const { createOffer, connection, roomDetails } = useRoomStore();
-
   useEffect(() => {
     async function playLocalVideo() {
       try {
         const constraints = { video: true, audio: true };
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         streamRef.current = stream;
-        stream.getTracks().forEach( track => {
-          if (connection) {
-            connection.peerConnection.addTrack(track, stream);
-          }
-        })
       } catch (error) {
         console.error('Error opening video camera.', error);
       }
@@ -32,6 +26,7 @@ function Peer1() {
       }
     };
   }, [connection]);
+
 
   useEffect(() => {
     if (connection && !negotiationInProgress) {
@@ -73,6 +68,7 @@ function Peer1() {
     if (videoElement && remoteStream) {
       videoElement.srcObject = remoteStream;
     }
+
     return () => {
       if (videoElement) {
         videoElement.srcObject = null;
@@ -80,6 +76,8 @@ function Peer1() {
     };
   }, [remoteStream]);
 
+
+  
   return (
     <div className="h-1/2 bg-gray-800 rounded-lg flex items-center justify-center">
       <video
