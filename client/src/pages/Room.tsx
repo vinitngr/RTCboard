@@ -2,8 +2,9 @@ import { useRoomStore } from "../store/roomStore";
 import { useEffect } from "react";
 import Peer1 from "../components/Peer1";
 import Peer2 from "../components/Peer2";
+// import Canva from "../components/Canvas";
+import WhiteBoard from "../components/WhiteBoard";
 import Canvas from "../components/Canvas";
-
 export default function Room() {
   const { roomDetails, exitRoom , connection } = useRoomStore();
 
@@ -39,7 +40,7 @@ export default function Room() {
         <Peer1 />
         <Peer2 />
       </div>
-      <Canvas/>
+      <Canvas />
     </div>
   );
 }

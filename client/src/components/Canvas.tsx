@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect,  useState } from 'react'
 import { useRoomStore } from '../store/roomStore';
-import { Check, Circle, Copy, Eraser, FileText, Minus, PenTool,  Save,  Square, Trash2 } from 'lucide-react';
+import { Check, Copy, FileText, PenTool } from 'lucide-react';
+import ExcalidrawCanvas from './ExcalidrawCanvas';
 
 function Canvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [liveUser, setLiveUser] = useState(0);
   const [copied, setCopied] = useState(false);
-  const [tool, setTool] = useState('pen');
   const {  exitRoom, roomDetails } = useRoomStore()
   const [mode, setMode] = useState<'draw' | 'view'>('draw');
   useEffect(() => {
@@ -44,6 +43,13 @@ function Canvas() {
               Room Name : {roomDetails?.roomName}
             </div>
           </div>
+          <button
+            onClick={() => exitRoom(roomDetails?.roomId)}
+            className="px-3 py-1.5  bg-red-600 text-white rounded-lg text-xs hover:bg-red-700 transition-colors flex items-center space-x-1"
+          >
+            <span>Disconnect</span>
+          </button>
+
         </div>
 
         <div className="flex bg-gray-100 p-1 rounded-lg">
@@ -70,66 +76,9 @@ function Canvas() {
         </div>
       </div>
       {mode === 'draw' ? (
-        <>
-          <div className="flex space-x-2 justify-between text-black">
-            <div>
-              <button
-                onClick={() => setTool('pen')}
-                className={`p-2 rounded ${tool === 'pen' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-              >
-                <PenTool className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setTool('rectangle')}
-                className={`p-2 rounded ${tool === 'rectangle' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-              >
-                <Square className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setTool('circle')}
-                className={`p-2 rounded ${tool === 'circle' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-              >
-                <Circle className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setTool('line')}
-                className={`p-2 rounded ${tool === 'line' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-              >
-                <Minus className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setTool('eraser')}
-                className={`p-2 rounded ${tool === 'eraser' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-              >
-                <Eraser className="w-5 h-5" />
-              </button>
-              <button
-                className="p-2 rounded hover:bg-gray-100"
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
-              <button
-                className="p-2 ml-3 bg-blue-500 rounded text-white hover:bg-blue-700"
-              >
-                <Save className="w-5 h-5" />
-              </button>
-            </div>
-            <button
-               onClick={() => exitRoom(roomDetails?.roomId)}
-                className="px-3 py-1.5  bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-1"
-              >
-                <span>Disconnect</span>
-              </button>
-          </div>
-
-          <canvas
-            ref={canvasRef}
-            width={800}
-            className="border border-gray-200 rounded-lg flex-1 w-full"
-          />
-        </>
+        <ExcalidrawCanvas/>
       ) : (
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto p2pdocs">
           <div className=" space-y-6 text-gray-900 bg-zinc-50 ">
             <h1 className="text-3xl font-bold outline-none p-2" contentEditable contextMenu='vinit' >Document Title</h1>
             <div

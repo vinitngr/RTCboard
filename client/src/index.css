@@ -16,3 +16,12 @@
   body{
     background-color: #09090B;
   }
+
+  .excalidraw .sidebar-trigger {
+    display: none !important;
+  }
+  
+
+  .p2pdocs {
+    cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><rect x='10' y='10' width='4' height='4' fill='black'/></svg>") 3 3, auto;
+  }
