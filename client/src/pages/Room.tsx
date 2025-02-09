@@ -3,20 +3,22 @@ import { useEffect } from "react";
 import Peer1 from "../components/Peer1";
 import Peer2 from "../components/Peer2";
 // import Canva from "../components/Canvas";
-import WhiteBoard from "../components/WhiteBoard";
 import Canvas from "../components/Canvas";
 export default function Room() {
-  const { roomDetails, exitRoom , connection } = useRoomStore();
-
+  const { roomDetails, exitRoom, connection } = useRoomStore();
+  const { setCanvasElement } = useRoomStore()
   useEffect(() => {
     if (connection) {
-      const dataChannelHandler = (event : RTCDataChannelEvent) => {
+      const dataChannelHandler = (event: RTCDataChannelEvent) => {
         const channel = event.channel;
-        channel.onmessage = ({ data }) => {console.log('Received message', data);};
+        channel.onmessage = ({ data }) => {
+          console.log('Received message', data);
+          setCanvasElement(JSON.parse(data))
+        };
         channel.onopen = () => console.log('Data channel opened');
-        channel.onclose = () => { 
+        channel.onclose = () => {
           console.log('data channel closed');
-          if(connection){
+          if (connection) {
             connection.peerConnection.close()
             connection.dataChannel.close()
             window.location.reload()
@@ -27,15 +29,15 @@ export default function Room() {
       connection.peerConnection.ondatachannel = dataChannelHandler;
     }
 
-    return ()=>{
+    return () => {
       if (connection) {
         connection.peerConnection.ondatachannel = null
       }
     }
-    }, [connection, exitRoom, roomDetails?.roomId]);
+  }, [connection, exitRoom, roomDetails?.roomId, setCanvasElement]);
 
   return (
-    <div className="flex h-screen text-white p-6 gap-6" style={{'backgroundColor': 'white'}}>
+    <div className="flex h-screen text-white p-6 gap-6" style={{ 'backgroundColor': 'white' }}>
       <div className="flex flex-col gap-4">
         <Peer1 />
         <Peer2 />

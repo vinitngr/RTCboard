@@ -1,3 +1,4 @@
+import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
 import { Socket } from "socket.io-client";
 
 interface AuthUser {
@@ -18,6 +19,8 @@ export interface AuthStore {
 }
 
 export interface RoomStore {
+    canvasElements : ExcalidrawElement[];
+    setCanvasElement : (canvasElement : ExcalidrawElement[]) => void;
     connection : null | { peerConnection: RTCPeerConnection; dataChannel: RTCDataChannel };
     socket: null | Socket;
     roomDetails: null | { roomId: string; roomName: string; roomPassword: string; status: string; participants: { role: string , fullName: string, userId: string }[] };

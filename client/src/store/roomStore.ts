@@ -9,6 +9,11 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     socket: null,
     roomDetails: null,
     connection : null ,
+    canvasElements : [],
+    setCanvasElement : (canvasElements) => {
+        set({ canvasElements });
+    },
+
     createRoom: async (roomData) => {
         const userDetails: { userId: string | undefined , fullName: string | undefined } = {
             fullName: useAuthStore.getState().authUser?.fullName,
