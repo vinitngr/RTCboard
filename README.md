@@ -5,11 +5,21 @@ This is a real-time collaboration platform built with **WebRTC, Node.js, React, 
 ## Features  
 - **Room Management:** Rooms are created and stored in **Redis**, allowing users to join existing sessions.  
 - **Peer-to-Peer Communication:** WebRTC enables direct **video and audio streaming** between participants.  
-- **Real-time Canvas Collaboration:** Users can draw and interact on a shared canvas.  
+- **Real-time Canvas Collaboration:** Users can draw and interact on a shared canvas (excalidraw board).  
 - **Socket.io Signaling:** Manages real-time communication for room events and peer connections.  
 - **Scalable Architecture:** Redis ensures efficient room tracking and session management.  
 - **Secure Access:** Authentication ensures only authorized users can join rooms.  
 - **User-Friendly Interface:** A clean, modern frontend enhances the collaboration experience.  
+
+## Room Page  
+After joining a room, users can see video streams and collaborate on a canvas.  
+
+![Room Page](https://res.cloudinary.com/dqu1cpasg/image/upload/v1739131359/Screenshot_2025-02-10_013210_agriws.png)
+
+## Home Page  
+
+![Home Page](https://res.cloudinary.com/dqu1cpasg/image/upload/v1739131368/Screenshot_2025-02-10_013047_bjop8q.png)
+
 
 ## Tech Stack  
 - **Frontend:** React.js (leveraging **Bolt.new** for UI efficiency with custom styling)  
