@@ -67,7 +67,8 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
         const { authUser } = useAuthStore.getState();
         if (!authUser || get().socket?.connected) return;
 
-        const socket = io("http://localhost:3001/rtc", {
+        const backendURL = `${import.meta.env.VITE_URL}/rtc`; 
+        const socket = io(backendURL, {
             query: { userId: authUser._id },
             autoConnect: false
         });
