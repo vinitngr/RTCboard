@@ -13,6 +13,13 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     setCanvasElement : (canvasElements) => {
         set({ canvasElements });
     },
+    docsElements : {
+        title : '',
+        elements : []
+    },
+    setDocsElements : (docsElements) => {
+        set({ docsElements });
+    },
 
     createRoom: async (roomData) => {
         const userDetails: { userId: string | undefined , fullName: string | undefined } = {

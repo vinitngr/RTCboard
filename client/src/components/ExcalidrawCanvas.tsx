@@ -1,11 +1,12 @@
 import { Excalidraw, MainMenu } from '@excalidraw/excalidraw';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
-import { Github, X } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { Github, Save, X } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRoomStore } from '../store/roomStore';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 
 function ExcalidrawCanvas() {
+  const canvasRef = useRef<HTMLDivElement>(null);
   const [canvasElement, setCanvasElement] = useState<ExcalidrawElement[]>([]);
   const { connection, canvasElements } = useRoomStore();
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
@@ -17,31 +18,44 @@ function ExcalidrawCanvas() {
 
   const sendData = useCallback(() => {
     if (connection?.dataChannel) {
-      connection.dataChannel.send(JSON.stringify(canvasElement));
+      connection.dataChannel.send(JSON.stringify({canvasElements: canvasElement, dataType: 'canvas'}));
       console.log("Sent Data", canvasElement);
     }
   }, [canvasElement, connection]);
 
+  useEffect(() => {
+    const handleMouseUp = () => {
+      if (canvasElement.length > 0) {
+        sendData();
+      } else {
+        console.log("No data to send");
+      }
+    };
+
+    const currentCanvasRef = canvasRef.current;
+    currentCanvasRef?.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      currentCanvasRef?.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [canvasElement, sendData]);
 
   return (
-    <div className="h-full w-full custom-styles">
+    <div className="h-full w-full custom-styles" ref={canvasRef}>
       <Excalidraw
       excalidrawAPI={(api)=> setExcalidrawAPI(api)}
-        // key={canvasElements?.length}   //causing remounting but without it convas doents get updated
-        // initialData={{ elements: canvasElements || [] }}
+        // key={canvasElements?.length}   //causing remounting but without it convas doents get updated (fix this issue using excalid api as on render excalid component dont remount)
+        initialData={{ elements: canvasElements || [] }}
         onChange={(elements: readonly ExcalidrawElement[]) => {
           setCanvasElement(elements as ExcalidrawElement[]);
-          // if(connection?.dataChannel.readyState === 'open') sendData(); //causing lag
         }}
         renderTopRightUI={() => (
           <button
-            className="bg-blue-500 border-none text-white w-max font-bold p-1 rounded"
-            onClick={() => sendData()}
-          >
-            Apply Change
-          </button>
+            className="bg-blue-500 text-white p-2 rounded-full"
+            onClick={() => sendData()}> <Save/> 
+          </button> //no use of it now, as it is being handled by mouse up event //use in context menu cases
         )}
-        UIOptions={{ tools: { image: false } }}
+        UIOptions={{ tools: { image: false } }}  //have to generate link (using storage) and pass it with link key option in excaclidrawELement
       >
         <MainMenu>
           <MainMenu.DefaultItems.Export />

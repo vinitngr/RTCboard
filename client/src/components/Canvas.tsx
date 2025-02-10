@@ -2,6 +2,7 @@ import { useEffect,  useState } from 'react'
 import { useRoomStore } from '../store/roomStore';
 import { Check, Copy, FileText, PenTool } from 'lucide-react';
 import ExcalidrawCanvas from './ExcalidrawCanvas';
+import Docs from './Docs';
 
 function Canvas() {
   const [liveUser, setLiveUser] = useState(0);
@@ -75,26 +76,9 @@ function Canvas() {
           </button>
         </div>
       </div>
-      {mode === 'draw' ? (
-        <ExcalidrawCanvas/>
-      ) : (
-        <div className="flex-1 overflow-y-auto p2pdocs">
-          <div className=" space-y-6 text-gray-900 bg-zinc-50 ">
-            <h1 className="text-3xl font-bold outline-none p-2" contentEditable contextMenu='vinit' >Document Title</h1>
-            <div
-              className="prose prose-lg outline-none p-2"
-              contentEditable
-              onInput={(e) => console.log((e.target as HTMLDivElement).innerText)}
-            >
-              <p>This is the document view of your canvas. You can add text, headings, and other content here to explain your drawings and collaborate with others.</p>
-              <h2>Section 1</h2>
-              <p>Add your content here...</p>
-              <h2>Section 2</h2>
-              <p>Continue with more sections and explanations...</p>
-            </div>
-          </div>
-        </div>
-      )}
+      {mode === 'draw' ? 
+        <ExcalidrawCanvas/> : <Docs/>
+      }
     </div>
   )
 }

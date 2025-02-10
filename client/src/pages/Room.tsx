@@ -6,21 +6,25 @@ import Peer2 from "../components/Peer2";
 import Canvas from "../components/Canvas";
 export default function Room() {
   const { roomDetails, exitRoom, connection } = useRoomStore();
-  const { setCanvasElement } = useRoomStore()
+  const { setCanvasElement, setDocsElements } = useRoomStore()
   useEffect(() => {
     if (connection) {
       const dataChannelHandler = (event: RTCDataChannelEvent) => {
         const channel = event.channel;
         channel.onmessage = ({ data }) => {
+          const parsedData = JSON.parse(data)
           console.log('Received message', data);
-          setCanvasElement(JSON.parse(data))
+          if (parsedData.dataType === 'docs') {
+            setDocsElements(parsedData.docsElements)
+          } else {
+            setCanvasElement(parsedData.canvasElements)
+          }
         };
         channel.onopen = () => console.log('Data channel opened');
         channel.onclose = () => {
           console.log('data channel closed');
           if (connection) {
             connection.peerConnection.close()
-            connection.dataChannel.close()
             window.location.reload()
           }
           exitRoom(roomDetails?.roomId)
@@ -34,7 +38,7 @@ export default function Room() {
         connection.peerConnection.ondatachannel = null
       }
     }
-  }, [connection, exitRoom, roomDetails?.roomId, setCanvasElement]);
+  }, [connection, exitRoom, roomDetails?.roomId, setCanvasElement, setDocsElements]);
 
   return (
     <div className="flex h-screen text-white p-6 gap-6" style={{ 'backgroundColor': 'white' }}>

@@ -5,11 +5,11 @@ interface AuthUser {
     _id: string;
     fullName: string;
     email: string;
-    profilepic : string;
-    createdAt : Date;
+    profilepic: string;
+    createdAt: Date;
     role: string
 }
-  
+
 export interface AuthStore {
     authUser: AuthUser | null;
     checkAuth: () => Promise<void>;
@@ -19,17 +19,39 @@ export interface AuthStore {
 }
 
 export interface RoomStore {
-    canvasElements : ExcalidrawElement[];
-    setCanvasElement : (canvasElement : ExcalidrawElement[]) => void;
-    connection : null | { peerConnection: RTCPeerConnection; dataChannel: RTCDataChannel };
+    docsElements: { title: string, elements: Element[] };
+    setDocsElements: (docsElement: { title: string, elements: Element[] }) => void;
+    canvasElements: ExcalidrawElement[];
+    setCanvasElement: (canvasElement: ExcalidrawElement[]) => void;
+    connection: null | { peerConnection: RTCPeerConnection; dataChannel: RTCDataChannel };
     socket: null | Socket;
-    roomDetails: null | { roomId: string; roomName: string; roomPassword: string; status: string; participants: { role: string , fullName: string, userId: string }[] };
+    roomDetails: null | { roomId: string; roomName: string; roomPassword: string; status: string; participants: { role: string, fullName: string, userId: string }[] };
     createRoom: (roomData: { roomName: string; roomPassword: string }) => Promise<void>;
     joinRoom: (joinRoomData: { roomId: string; roomPassword: string }) => Promise<void>;
-    exitRoom: (roomId: string | undefined ) => Promise<void>;
+    exitRoom: (roomId: string | undefined) => Promise<void>;
     connectSocket: () => void;
     // userInRoom : string[] ;
     disconnectSocket: () => void;
-    createOffer: ( creatorId : string ) => void;
-    createAnswer: (offer : RTCSessionDescription ) => void;
-    }
+    createOffer: (creatorId: string) => void;
+    createAnswer: (offer: RTCSessionDescription) => void;
+}
+
+
+export interface Element {
+    color: string;
+    id: number;
+    tag: keyof JSX.IntrinsicElements;
+    text: string;
+    className?: string;
+    ref?: React.RefObject<HTMLElement>;
+}
+
+export interface ToolbarButton {
+    title?: string;
+    tag?: keyof JSX.IntrinsicElements;
+    icon?: JSX.Element;
+    label?: string;
+    className?: string;
+    defaultText?: string;
+    type?: 'divider' | 'spacer';
+}
