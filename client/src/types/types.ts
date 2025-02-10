@@ -43,7 +43,7 @@ export interface Element {
     tag: keyof JSX.IntrinsicElements;
     text: string;
     className?: string;
-    ref?: React.RefObject<HTMLElement>;
+    ref?: React.LegacyRef<HTMLInputElement>;
 }
 
 export interface ToolbarButton {
@@ -52,6 +52,5 @@ export interface ToolbarButton {
     icon?: JSX.Element;
     label?: string;
     className?: string;
-    defaultText?: string;
     type?: 'divider' | 'spacer';
 }
