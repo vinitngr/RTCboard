@@ -1,16 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Bold, List, Link2, AtSign, Code, X, Save } from 'lucide-react';
-import { Element, ToolbarButton } from '../types/types';
+import {  ToolbarButton } from '../types/types';
 import { useRoomStore } from '../store/roomStore';
 
-function App() {
-    const {connection , docsElements  , roomDetails } = useRoomStore()
+function Docs() {
+    const { connection, docsElements , roomDetails } = useRoomStore()
 
-    const [content, setContent] = useState({
-        title: roomDetails?.roomName || '',
-        elements: [] as Element[],
-    });
-    
     const [selectedColor, setSelectedColor] = useState<string>('black');
 
     const toolbarButtons: ToolbarButton[] = [
@@ -31,7 +26,6 @@ function App() {
     const addElement = (tag: keyof JSX.IntrinsicElements, title: string, className = "", defaultText = title) => {
         const newRef = React.createRef<HTMLElement>();
         const newElement = { id: Date.now(), tag, text: defaultText, className, ref: newRef, color: selectedColor };
-        setContent((prev) => ({ ...prev, elements: [...prev.elements, newElement] }));
         useRoomStore.setState((state) => ({
             docsElements: { ...state.docsElements, elements: [...state.docsElements.elements, newElement] }
         }))
@@ -41,52 +35,42 @@ function App() {
     };
 
     const updateTitle = (newTitle: string) => {
-        setContent((prev) => ({ ...prev, title: newTitle }));
-        
         useRoomStore.setState((state) => ({
             docsElements: { ...state.docsElements, title: newTitle }
         }));
     };
-    
-    // useEffect(() => {
-    //     // setContent((prev) => ({ ...prev ,elements: docsElements }));
-    // }, [docsElements]);
-    
 
+    const removeElement = (id: number) => {
+        useRoomStore.setState((state) => ({
+            docsElements: {
+                ...state.docsElements, elements: state.docsElements.elements.filter((el) => el.id !== id)
+            }
+        }))
+    }
     const sendData = useCallback(() => {
         if (connection?.dataChannel) {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const deleteRefsFromArray = content.elements.map(({ ref, ...rest }) => rest);
-    
-            connection.dataChannel.send(JSON.stringify({ dataType : "docs" ,docsElements: { title : content.title , elements :deleteRefsFromArray}}));
+            const deleteRefsFromArray = docsElements.elements.map(({ ref, ...rest }) => rest);
+
+            connection.dataChannel.send(JSON.stringify({ dataType: "docs", docsElements: { title: docsElements.title, elements: deleteRefsFromArray } }));
             console.log("Sent Data", deleteRefsFromArray);
         }
-    }, [content, connection]);  
-    
+    }, [connection?.dataChannel, docsElements.elements, docsElements.title]);
 
+    //TODO - getting reversed string on typeing 
     const updateElement = (id: number, text: string) => {
-        setContent((prev) => ({
-            ...prev,
-            elements: prev.elements.map((el) =>
-                el.id === id ? { ...el, text } : el
-            ),
-        }));
+        useRoomStore.setState((state) => ({
+            docsElements: {
+                ...state.docsElements, elements: state.docsElements.elements.map((el) =>
+                    el.id === id ? { ...el, text } : el
+                )
+            }
+        }))
     };
-    
-    // const removeElement = (id: number) => {
-    //     setContent((prev) => {
-    //         const updatedElements = prev.elements.filter((el) => el.id !== id);
-            
-    //         // Sync changes with store
-    //         useRoomStore.setState({ docsElements: { elements : updatedElements , title : content.title} });
-    
-    //         return { ...prev, elements: updatedElements };
-    //     });
-    // };
-    
-    console.log(content);
 
-    useEffect(()=>{
+    // console.log(docsElements);
+
+    useEffect(() => {
         document.onkeydown = () => {
             sendData()
         }
@@ -94,16 +78,18 @@ function App() {
             document.onkeydown = null
         }
     })
+
+
     return (
         <div className="bg-gray-50 text-black">
             <div className="max-w-4xl mx-auto">
-            <input
-                type="text"
-                value={docsElements.title}
-                onChange={(e) => updateTitle(e.target.value)}
-                placeholder="Title"
-                className="w-full px-3 py-2 text-xl font-semibold border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+                <input
+                    type="text"
+                    value={docsElements.title || roomDetails?.roomName}
+                    onChange={(e) => updateTitle(e.target.value)}
+                    placeholder="Title"
+                    className="w-full px-3 py-2 text-xl font-semibold border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
 
                 <div className="rounded-md bg-white">
                     <div className="px-4 py-2 flex items-center gap-2 border-b border-gray-200 flex-wrap">
@@ -134,27 +120,27 @@ function App() {
                             <div key={el.id} className="relative group flex items-center gap-2">
                                 {
                                     React.createElement(
-                                    el.tag,
-                                    {
-                                        ref: el.ref,
-                                        contentEditable: true,
-                                        suppressContentEditableWarning: true,
-                                        className: `outline-none mb-1 p-1 w-full ${el.className} ${el.tag === 'a' ? "cursor-pointer" : ""} ${el.tag === 'code' ? "bg-gray-200 px-5 py-5 rounded text-sm font-mono" : ""}`,
-                                        onClick: el.tag === 'a' ? () => window.open(el.text, '_blank') : undefined,
-                                        onInput: (e: React.FormEvent<HTMLDivElement>) => updateElement(el.id, e.currentTarget.innerText),
-                                        style: { color: el?.color },
-                                    },
-                                    el.text
-                                )}
+                                        el.tag,
+                                        {
+                                            ref: el.ref,
+                                            contentEditable: true,
+                                            suppressContentEditableWarning: true,
+                                            className: `outline-none mb-1 p-1 w-full ${el.className} ${el.tag === 'a' ? "cursor-pointer" : ""} ${el.tag === 'code' ? "bg-gray-200 px-5 py-5 rounded text-sm font-mono" : ""}`,
+                                            onClick: el.tag === 'a' ? () => window.open(el.text, '_blank') : undefined,
+                                            onInput: (e: React.FormEvent<HTMLDivElement>) => updateElement(el.id, e.currentTarget.innerText),
+                                            style: { color: el?.color },
+                                        },
+                                        el.text
+                                    )}
                                 <button
                                     className="text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                                    // onClick={() => removeElement(el.id)}
+                                    onClick={() => removeElement(el.id)}
                                 >
                                     <X size={16} />
                                 </button>
                             </div>
                         ))}
-                        <div 
+                        <div
                             title='Save to populate changes on user2'
                             onClick={sendData}
                             className='absolute bottom-4 right-8 bg-blue-500 text-white p-2 rounded-full'
@@ -168,4 +154,4 @@ function App() {
     );
 }
 
-export default App;
+export default Docs;
