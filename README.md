@@ -56,7 +56,7 @@ npm install
 
 #### 3. Start the application:  
 
-##### Start Redis:  
+##### Start Redis:
 ```sh  
 redis-server   
 # or  
@@ -75,10 +75,11 @@ cd client
 npm run dev  
 ```
 
-## Usage  
-1. Open the application in the browser.  
-2. Create a new room or join an existing one using **Room ID** and **password**.  
-3. Share the **Room ID** and **password** with participants.  
-4. Connect with peers for video/audio communication.  
-5. Collaborate on the shared canvas in real time.  
+## Usage
+1. Signup using email and password
+2. Open the application in the browser.  
+3. Create a new room or join an existing one using **Room ID** and **password**.  
+4. Share the **Room ID** and **password** with participants.  
+5. Connect with peers for video/audio communication.  
+6. Collaborate on the shared canvas in real time.  
 
