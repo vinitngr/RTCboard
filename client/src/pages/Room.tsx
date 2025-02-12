@@ -42,7 +42,7 @@ export default function Room() {
 
   return (
     <div className="flex h-screen text-white p-6 gap-6" style={{ 'backgroundColor': 'white' }}>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 w-[20%]">
         <Peer1 />
         <Peer2 />
       </div>

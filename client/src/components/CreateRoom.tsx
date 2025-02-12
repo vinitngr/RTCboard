@@ -69,23 +69,3 @@ function CreateRoom() {
 }
 
 export default CreateRoom
-
-
-
-
-{/* <input
-                required
-                type="text"
-                placeholder="Enter Room Name"
-                value={roomData.roomName}
-                onChange={(e) => setRoomData({ ...roomData, roomName: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-              />
-              <input
-                required
-                type="text"
-                placeholder="Enter Room Password"
-                value={roomData.roomPassword}
-                onChange={(e) => setRoomData({ ...roomData, roomPassword: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-              /> */}

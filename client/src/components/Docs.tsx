@@ -124,9 +124,9 @@ function Docs() {
                         {docsElements.elements.map((el) => (
                             <div key={el.id} className="relative group flex items-center gap-2">
                                 <input
-                                    type="text"
-                                    ref={el.ref}
+                                type='text'
                                     value={el.text}
+                                    ref={el.ref}
                                     onChange={(e) => updateElement(el.id, e.target.value)}
                                     className={`outline-none mb-1 p-1 w-full ${el.className}${el.tag === 'code' ? 'bg-gray-200 px-5 py-5 rounded text-sm font-mono' : ''}`}
                                     style={{ color: `${el.tag == 'a' ? 'blue' : el?.color}` }}

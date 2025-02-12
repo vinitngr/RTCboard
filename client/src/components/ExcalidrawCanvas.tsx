@@ -35,9 +35,11 @@ function ExcalidrawCanvas() {
 
     const currentCanvasRef = canvasRef.current;
     currentCanvasRef?.addEventListener("mouseup", handleMouseUp);
-
+    currentCanvasRef?.addEventListener("keydown", handleMouseUp);
+    
     return () => {
       currentCanvasRef?.removeEventListener("mouseup", handleMouseUp);
+      currentCanvasRef?.removeEventListener("keydown", handleMouseUp);
     };
   }, [canvasElement, sendData, setCanvasElements]);
 
