@@ -10,7 +10,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     roomDetails: null,
     connection : null ,
     canvasElements : [],
-    setCanvasElement : (canvasElements) => {
+    setCanvasElements : (canvasElements) => {
         set({ canvasElements });
     },
     docsElements : {

@@ -22,7 +22,7 @@ export interface RoomStore {
     docsElements: { title: string, elements: Element[] };
     setDocsElements: (docsElement: { title: string, elements: Element[] }) => void;
     canvasElements: ExcalidrawElement[];
-    setCanvasElement: (canvasElement: ExcalidrawElement[]) => void;
+    setCanvasElements: (canvasElement: ExcalidrawElement[]) => void;
     connection: null | { peerConnection: RTCPeerConnection; dataChannel: RTCDataChannel };
     socket: null | Socket;
     roomDetails: null | { roomId: string; roomName: string; roomPassword: string; status: string; participants: { role: string, fullName: string, userId: string }[] };
