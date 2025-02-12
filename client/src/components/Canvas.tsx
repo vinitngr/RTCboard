@@ -1,13 +1,13 @@
 import { useEffect,  useState } from 'react'
 import { useRoomStore } from '../store/roomStore';
-import { Check, Copy, FileText, PenTool } from 'lucide-react';
+import { Check, Copy, FileText, PenTool, Save } from 'lucide-react';
 import ExcalidrawCanvas from './ExcalidrawCanvas';
 import Docs from './Docs';
 
 function Canvas() {
   const [liveUser, setLiveUser] = useState(0);
   const [copied, setCopied] = useState(false);
-  const {  exitRoom, roomDetails } = useRoomStore()
+  const {  exitRoom, roomDetails , saveRoom } = useRoomStore()
   const [mode, setMode] = useState<'draw' | 'view'>('draw');
   useEffect(() => {
     setLiveUser(roomDetails?.participants?.length || 0);
@@ -49,6 +49,14 @@ function Canvas() {
             className="px-3 py-1.5  bg-red-600 text-white rounded-lg text-xs hover:bg-red-700 transition-colors flex items-center space-x-1"
           >
             <span>Disconnect</span>
+          </button>
+          <button
+          className='text-black'
+          onClick={()=>{
+            saveRoom()
+          }}
+          >
+            <Save/> save
           </button>
 
         </div>

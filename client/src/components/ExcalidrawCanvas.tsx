@@ -11,6 +11,7 @@ function ExcalidrawCanvas() {
   const { connection, canvasElements } = useRoomStore();
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
 
+  console.log(canvasElement);
   useEffect(() => {
     console.log("Updated canvasElements", canvasElements);
     excalidrawAPI?.updateScene({ elements: canvasElements || [] });

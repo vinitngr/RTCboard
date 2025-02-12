@@ -34,6 +34,7 @@ export interface RoomStore {
     disconnectSocket: () => void;
     createOffer: (creatorId: string) => void;
     createAnswer: (offer: RTCSessionDescription) => void;
+    saveRoom: () => void;
 }
 
 

@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import client from '../lib/redis';
 import { z } from 'zod';
 import { rtc, userInRoom } from '../sockets/rtc';
+import Room from '../models/Room';
 export const createRoom = async (req: any, res: any) => {
     const { roomName , roomPassword , createdBy } = req.body;
     const createRoomSchema = z.object({
@@ -90,4 +91,43 @@ export const exitRoom = async (req: any, res: any) => {
     } catch (error : any) {
         res.status(401).json({ message : "failed to Exit"})
     }
+}
+
+export const saveRoom = async ( req : any , res : any )=>{
+    const { roomData } = req.body;
+
+    const roomDataSchema = z.object({
+        roomData: z.object({
+            roomId: z.string().trim().min(6, "Room ID is required"),
+            roomName: z.string().trim().min(1, "Room name is required"),
+            roomCreated: z.coerce.date(),
+            participants: z.array(
+                z.object({
+                    fullName: z.string().trim().min(1, "Participant name is required"),
+                    role: z.enum(['creator', 'joiner'] ,  {
+                        errorMap: () => ({ message: 'Invalid role, only accept creator and joiner' })
+                    }), 
+                    userId: z.string().length(24, { message: "Invalid userDetails ID" })
+                })
+            ).min(1, "At least one participant is required"),
+            Data: z.object({
+            canvasData: z.string().optional(), 
+            docsData: z.string().optional()
+            })
+        })
+    });
+
+    const validation = roomDataSchema.safeParse(req.body);
+    if (!validation.success) {
+        return res.status(400).json({ message: validation.error.errors[0].message });
+    }
+    
+    try {
+        const room = new Room(roomData);
+        const successData = await room.save();
+        res.status(200).json({ message : "Room saved successfully" , successData})
+    } catch (error : any) {
+        res.status(401).json({ message : "failed to save room" , error : error})
+    }
+
 }

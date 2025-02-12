@@ -53,6 +53,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
                 userDetails: userDetails
             });
             set({ roomDetails: res.data }); 
+            console.log(get().roomDetails?.participants);
             get().createOffer(res.data.participants[0].userId);
             return res.data?.roomId;
         } catch (error) {
@@ -180,4 +181,24 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
         }
     },
     
+
+    saveRoom : async () =>{
+        try {
+            const roomData = {
+                roomId : get().roomDetails?.roomId,
+                roomName : get().roomDetails?.roomName,
+                roomCreated : "2025-02-12T00:00:00.000Z",
+                participants : get().roomDetails?.participants,
+                Data :{
+                    canvasData : JSON.stringify(get().canvasElements),
+                    docsData : JSON.stringify(get().docsElements)
+                }
+            }
+
+            const res = await axiosInstance.post("/room/save-room", {roomData});
+            console.log(res);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }));
