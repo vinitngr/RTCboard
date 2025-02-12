@@ -10,6 +10,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     roomDetails: null,
     connection : null ,
     canvasElements : [],
+    meetings : [],
     setCanvasElements : (canvasElements) => {
         set({ canvasElements });
     },
@@ -197,6 +198,16 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
 
             const res = await axiosInstance.post("/room/save-room", {roomData});
             console.log(res);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    ,
+
+    getMeetings : async () => {
+        try {
+            const res = await axiosInstance.get("/room/get-meetings");
+            set({ meetings : res.data.meetings });
         } catch (error) {
             console.log(error);
         }

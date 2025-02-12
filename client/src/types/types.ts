@@ -19,6 +19,8 @@ export interface AuthStore {
 }
 
 export interface RoomStore {
+    getMeetings: () => void;
+    meetings: { roomId : string , roomName : string , roomCreated : string , participants : { role: string, fullName: string, userId: string }[] }[] | [];
     docsElements: { title: string, elements: Element[] };
     setDocsElements: (docsElement: { title: string, elements: Element[] }) => void;
     canvasElements: ExcalidrawElement[];
