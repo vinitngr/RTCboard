@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axiosinstance";
 import { AuthStore } from "../types/types";
 import { isAxiosError } from "axios";
+import { useRoomStore } from "./roomStore";
 
 export const useAuthStore = create<AuthStore>((set) => ({
     authUser: null,
@@ -56,7 +57,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
         const res = await axiosInstance.post("/auth/register", formData);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { token, ...user } = res.data;
-        console.log(res.data);
         set({ authUser: user });
       } catch (error) {
         if(isAxiosError(error) && error.response?.data?.message){
@@ -70,6 +70,14 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
     handleLogout: async () => {
       try {
+        useRoomStore.setState({
+          socket: null,
+          roomDetails: null,
+          connection: null,
+          canvasElements: [],
+          meetings: [],
+          docsElements: { title: "", elements: [] },
+        });
         await axiosInstance.post("/auth/logout");
         set({ authUser: null });
       } catch (error) {

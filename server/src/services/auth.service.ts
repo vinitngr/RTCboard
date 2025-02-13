@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import User from '../models/User';
 
-export const registerUser = async (fullName: string, email: string, password: string) => {
+export const registerUser = async (fullName: string, email: string, password: string , profession: string) => {
   const userExists = await User.findOne({ email });
   if (userExists) {
     throw new Error("User already exists");
@@ -12,7 +12,8 @@ export const registerUser = async (fullName: string, email: string, password: st
   const newUser = new User({
     fullName,
     email,
-    password: hashPassword
+    password: hashPassword,
+    profession
   });
 
   const savedUser = await newUser.save();
@@ -24,6 +25,7 @@ export const registerUser = async (fullName: string, email: string, password: st
     _id: savedUser._id,
     fullName: savedUser.fullName,
     email: savedUser.email,
+    profession: savedUser.profession,
     profilepic: savedUser.profilepic,
   };
 };

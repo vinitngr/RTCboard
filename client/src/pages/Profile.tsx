@@ -22,7 +22,7 @@ function Profile() {
               />
               <div>
                 <h1 className="text-2xl font-bold text-white">{authUser?.fullName}</h1>
-                <p className="text-zinc-400">{authUser?.role || 'unspecified'}</p>
+                <p className="text-zinc-400">{authUser?.profession || 'unspecified'}</p>
               </div>
             </div>
           </div>
@@ -35,7 +35,7 @@ function Profile() {
             <div className="flex items-center space-x-3 text-zinc-300">
               <Calendar className="w-5 h-5 text-zinc-400" />
               <span>
-                Joined {authUser?.createdAt ? new Date(authUser?.createdAt).toLocaleString('default', { month: 'long', day: 'numeric' }) : 'UnKnown'}
+                Joined {authUser?.createdAt ? new Date(authUser?.createdAt).toLocaleString('us-en', { month: 'long', day: 'numeric' }) : 'UnKnown'}
               </span>
             </div>
           </div>

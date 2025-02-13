@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { User, Video, History, Menu, X } from 'lucide-react';
+import { useAuthStore } from '../store/authStore';
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-
+  const { handleLogout } = useAuthStore();
   const navigation = [
     { name: 'Rooms', href: '/', icon: Video },
     { name: 'Profile', href: '/profile', icon: User },
@@ -52,6 +53,9 @@ function Navbar() {
               );
             })}
           </div>
+          <div className='text-red-500 cursor-pointer bg-white/10 p-2 rounded-lg text-sm font-medium transition-colors duration-150 '
+          onClick={handleLogout}
+          >Logout</div>
         </div>
 
         {isMenuOpen && (

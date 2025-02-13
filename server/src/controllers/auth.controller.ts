@@ -4,7 +4,7 @@ import { loginUser, registerUser } from "../services/auth.service";
 
 
 export const register = async (req: any, res: any) => {
-  const { fullName, email, password } = req.body;
+  const { fullName, email, password , profession} = req.body;
 
   const Schema = z.object({
     fullName: z.string().min(3, { message: "Name must be at least 3 characters long" }),
@@ -13,15 +13,16 @@ export const register = async (req: any, res: any) => {
       "Invalid email domain. Only Gmail, Hotmail, Outlook, and Yahoo are allowed."
     ),
     password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
+    profession: z.string(),
   });
 
-  const validation = Schema.safeParse({ fullName, email, password });
+  const validation = Schema.safeParse({ fullName, email, password , profession });
   if (!validation.success) {
     return res.status(400).json({ message: validation.error.errors[0].message });
   }
 
   try {
-    const userData = await registerUser(fullName, email, password);
+    const userData = await registerUser(fullName, email, password , profession);
     const token = generateToken(userData._id , res);
     res.status(201).json({...userData , token});
   } catch (error: any) {
