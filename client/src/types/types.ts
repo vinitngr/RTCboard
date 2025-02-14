@@ -21,6 +21,7 @@ export interface AuthStore {
 
 export interface RoomStore {
     getMeetings: () => void;
+    selectedMeetingData : {canvasData : string , docsData : string } | null;
     meetings: { roomId : string , roomName : string , roomCreated : string , participants : { role: string, fullName: string, userId: string }[] }[] | [];
     docsElements: { title: string, elements: Element[] };
     setDocsElements: (docsElement: { title: string, elements: Element[] }) => void;
@@ -38,6 +39,7 @@ export interface RoomStore {
     createOffer: (creatorId: string) => void;
     createAnswer: (offer: RTCSessionDescription) => void;
     saveRoom: () => void;
+    getMeetingData : (roomId : string) => void 
 }
 
 

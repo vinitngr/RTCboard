@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/authStore';
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const { handleLogout } = useAuthStore();
+  const { handleLogout , authUser } = useAuthStore();
   const navigation = [
     { name: 'Rooms', href: '/', icon: Video },
     { name: 'Profile', href: '/profile', icon: User },
@@ -53,10 +53,15 @@ function Navbar() {
               );
             })}
           </div>
-          <div className='text-red-500 cursor-pointer bg-white/10 p-2 rounded-lg text-sm font-medium transition-colors duration-150 '
-          onClick={handleLogout}
-          >Logout</div>
-        </div>
+          {
+            authUser && (
+
+              <div className='text-red-500 cursor-pointer bg-white/10 p-2 rounded-lg text-sm font-medium transition-colors duration-150 '
+              onClick={handleLogout}
+              >Logout</div>
+            )
+          }
+          </div>
 
         {isMenuOpen && (
           <div className="md:hidden">

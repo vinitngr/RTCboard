@@ -143,3 +143,18 @@ export const getMeetings = async (req: any, res: any) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 }
+
+
+export const getMeetingData = async (req: any, res: any) => {
+    const { roomId } = req.params;
+    try {
+        console.log(roomId);
+        const room = await Room.find({roomId}).select('Data');
+        if (!room) {
+            return res.status(404).json({ message: "Room not found" });
+        }
+        res.status(200).json({ meetingData : room[0].Data })
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}

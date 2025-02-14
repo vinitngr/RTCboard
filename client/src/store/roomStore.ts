@@ -21,6 +21,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     setDocsElements : (docsElements) => {
         set({ docsElements });
     },
+    selectedMeetingData : null,
 
     createRoom: async (roomData) => {
         const userDetails: { userId: string | undefined , fullName: string | undefined } = {
@@ -208,6 +209,16 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
         try {
             const res = await axiosInstance.get("/room/get-meetings");
             set({ meetings : res.data.meetings });
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    
+    getMeetingData : async (roomId) => {
+        try {
+            const res = await axiosInstance.get(`/room/get-meeting-data/${roomId}`);
+            set({ selectedMeetingData : res.data.meetingData });
+            console.log(get().selectedMeetingData);
         } catch (error) {
             console.log(error);
         }
