@@ -85,8 +85,8 @@ function Docs() {
 
 
     return (
-        <div className="bg-gray-50 text-black">
-            <div className="w-full h-full">
+        <div className="bg-gray-50 w-full h-full     text-black">
+            <div>
                 <input
                     type="text"
                     value={docsElements.title || roomDetails?.roomName}
