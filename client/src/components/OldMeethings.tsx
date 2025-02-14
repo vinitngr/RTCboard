@@ -15,6 +15,7 @@ function OldMeethings() {
     if (!roomId || datafetched.current) return;
     getMeetingData(roomId)
     excalidrawAPI?.updateScene({ elements: selectedMeetingData && JSON.parse(selectedMeetingData.canvasData) || [] });
+    if(selectedMeetingData) console.log(JSON.parse(selectedMeetingData.canvasData), JSON.parse(selectedMeetingData.docsData));
     datafetched.current = true
   }, [excalidrawAPI, getMeetingData, roomId, selectedMeetingData]);
 
@@ -27,7 +28,8 @@ function OldMeethings() {
       </div>
       <div className="w-1/2 flex justify-center text-white items-center">
         <div className="bg-gray-50 w-full h-full p-5    text-black">
-          {selectedMeetingData?.docsData && (
+          {
+          selectedMeetingData?.docsData && (
             <div>
               <input
                 type="text"
@@ -39,7 +41,7 @@ function OldMeethings() {
               <div className="rounded-md bg-white">
 
                 <div className="px-4 py-3 h-[430px] overflow-y-scroll">
-                  {JSON.parse(selectedMeetingData?.docsData).elements.map((el: { id: Key | null | undefined; text: string | number | readonly string[] | undefined; ref: LegacyRef<HTMLInputElement> | undefined; className: string; tag: string; color: string | (string & {}) | undefined; }) => (
+                   {  JSON.parse(selectedMeetingData?.docsData).elements.map((el: { id: Key | null | undefined; text: string | number | readonly string[] | undefined; ref: LegacyRef<HTMLInputElement> | undefined; className: string; tag: string; color: string | (string & {}) | undefined; }) => (
                     <div key={el.id} className="relative group flex items-center gap-2">
                       <input
                         type="text"

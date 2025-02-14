@@ -186,6 +186,8 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
 
     saveRoom : async () =>{
         try {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const docsData = get().docsElements.elements.map(({ ref, ...rest }) => rest);
             const roomData = {
                 roomId : get().roomDetails?.roomId,
                 roomName : get().roomDetails?.roomName,
@@ -193,7 +195,10 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
                 participants : get().roomDetails?.participants,
                 Data :{
                     canvasData : JSON.stringify(get().canvasElements),
-                    docsData : JSON.stringify(get().docsElements)
+                    docsData : JSON.stringify({
+                        title : get().docsElements.title , elements : docsData
+                    })
+                    
                 }
             }
 

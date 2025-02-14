@@ -26,12 +26,12 @@ function Docs() {
     const addElement = (tag: keyof JSX.IntrinsicElements, title: string, className = "") => {
         const newRef = React.createRef<HTMLElement>();
         const newElement = { id: Date.now(), tag, text: title, className, ref: newRef as LegacyRef<HTMLInputElement>, color: selectedColor };
-        useRoomStore.setState((state) => ({
-            docsElements: { ...state.docsElements, elements: [...state.docsElements.elements, newElement] }
-        }))
         setTimeout(() => {
             newRef.current?.focus();
         }, 0); //setTimeout ensures focus runs after React commits updates to the DOM.
+        useRoomStore.setState((state) => ({
+            docsElements: { ...state.docsElements, elements: [...state.docsElements.elements, newElement] }
+        }))
     };
 
     const updateTitle = (newTitle: string) => {
