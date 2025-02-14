@@ -21,8 +21,8 @@ export interface AuthStore {
 
 export interface RoomStore {
     getMeetings: () => void;
-    selectedMeetingData : {canvasData : string , docsData : string } | null;
-    meetings: { roomId : string , roomName : string , roomCreated : string , participants : { role: string, fullName: string, userId: string }[] }[] | [];
+    selectedMeetingData: { canvasData: string, docsData: string } | null;
+    meetings: { roomId: string, roomName: string, roomCreated: string, participants: { role: string, fullName: string, userId: string }[] }[] | [];
     docsElements: { title: string, elements: Element[] };
     setDocsElements: (docsElement: { title: string, elements: Element[] }) => void;
     canvasElements: ExcalidrawElement[];
@@ -34,12 +34,11 @@ export interface RoomStore {
     joinRoom: (joinRoomData: { roomId: string; roomPassword: string }) => Promise<void>;
     exitRoom: (roomId: string | undefined) => Promise<void>;
     connectSocket: () => void;
-    // userInRoom : string[] ;
     disconnectSocket: () => void;
     createOffer: (creatorId: string) => void;
     createAnswer: (offer: RTCSessionDescription) => void;
     saveRoom: () => void;
-    getMeetingData : (roomId : string) => void 
+    getMeetingData: (roomId: string) => void
 }
 
 

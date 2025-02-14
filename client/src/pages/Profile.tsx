@@ -3,17 +3,17 @@ import { useAuthStore } from '../store/authStore';
 
 function Profile() {
 
-  const {authUser} = useAuthStore();
+  const { authUser } = useAuthStore();
 
 
   return (
     <div className="flex flex-col flex-grow">
       <div className=" mx-auto w-[50vw] mt-10 bg-[#101013]">
-        
+
         <div className="bg-zinc-900/50 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] border border-zinc-800/50 overflow-hidden">
-          
+
           <div className="px-8 pt-8 pb-6">
-            
+
             <div className="flex items-center space-x-6">
               <img
                 src={authUser?.profilepic}

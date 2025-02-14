@@ -12,13 +12,13 @@ function Login() {
   const { handleLogin } = useAuthStore();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-      try{
-        e.preventDefault();
-        handleLogin(formData);
-      }catch(error){
-        console.log(error);
-        setFormData({ email: "", password: "" });
-      }
+    try {
+      e.preventDefault();
+      handleLogin(formData);
+    } catch (error) {
+      console.log(error);
+      setFormData({ email: "", password: "" });
+    }
   };
 
   return (
@@ -50,8 +50,8 @@ function Login() {
               className="absolute right-3 top-1/2 transform -translate-y-1/2"
               onClick={() => setisVisible(!isVisible)}
             >
-              {isVisible ? <Eye/> : <EyeOff/>}
-              
+              {isVisible ? <Eye /> : <EyeOff />}
+
             </button>
           </div>
           <div>

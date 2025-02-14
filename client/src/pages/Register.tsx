@@ -5,7 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 
 function Register() {
   const [isVisible, setisVisible] = useState(false)
-  const [formData, setFormData] = useState<{ email: string; fullName: string; password: string , profession: string }>({
+  const [formData, setFormData] = useState<{ email: string; fullName: string; password: string, profession: string }>({
     email: "",
     fullName: "",
     password: "",
@@ -87,8 +87,8 @@ function Register() {
               className="absolute right-3 top-1/2 transform -translate-y-1/2"
               onClick={() => setisVisible(!isVisible)}
             >
-              {isVisible ? <Eye/> : <EyeOff/>}
-              
+              {isVisible ? <Eye /> : <EyeOff />}
+
             </button>
           </div>
           <div>

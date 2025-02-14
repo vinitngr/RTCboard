@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/authStore';
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const { handleLogout , authUser } = useAuthStore();
+  const { handleLogout, authUser } = useAuthStore();
   const navigation = [
     { name: 'Rooms', href: '/', icon: Video },
     { name: 'Profile', href: '/profile', icon: User },
@@ -41,11 +41,10 @@ function Navbar() {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${
-                    isActive(item.href)
+                  className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${isActive(item.href)
                       ? 'bg-white/10 text-white'
                       : 'text-zinc-400 hover:text-zinc-200'
-                  }`}
+                    }`}
                 >
                   <Icon className="w-4 h-4 mr-2" />
                   {item.name}
@@ -57,11 +56,11 @@ function Navbar() {
             authUser && (
 
               <div className='text-red-500 cursor-pointer bg-white/10 p-2 rounded-lg text-sm font-medium transition-colors duration-150 '
-              onClick={handleLogout}
+                onClick={handleLogout}
               >Logout</div>
             )
           }
-          </div>
+        </div>
 
         {isMenuOpen && (
           <div className="md:hidden">
@@ -72,11 +71,10 @@ function Navbar() {
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${
-                      isActive(item.href)
+                    className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${isActive(item.href)
                         ? 'bg-white/10 text-white'
                         : 'text-zinc-400 hover:text-zinc-200'
-                    }`}
+                      }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Icon className="w-4 h-4 mr-2" />

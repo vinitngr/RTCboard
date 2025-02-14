@@ -3,35 +3,35 @@ import { axiosInstance } from "../lib/axiosinstance";
 import { useAuthStore } from "./authStore";
 import { RoomStore } from "../types/types";
 import { io } from "socket.io-client";
-import { PeerConnection  } from "../lib/rtc";
+import { PeerConnection } from "../lib/rtc";
 
 export const useRoomStore = create<RoomStore>((set, get) => ({
     socket: null,
     roomDetails: null,
-    connection : null ,
-    canvasElements : [],
-    meetings : [],
-    setCanvasElements : (canvasElements) => {
+    connection: null,
+    canvasElements: [],
+    meetings: [],
+    setCanvasElements: (canvasElements) => {
         set({ canvasElements });
     },
-    docsElements : {
-        title : '',
-        elements : []
+    docsElements: {
+        title: '',
+        elements: []
     },
-    setDocsElements : (docsElements) => {
+    setDocsElements: (docsElements) => {
         set({ docsElements });
     },
-    selectedMeetingData : null,
+    selectedMeetingData: null,
 
     createRoom: async (roomData) => {
-        const userDetails: { userId: string | undefined , fullName: string | undefined } = {
+        const userDetails: { userId: string | undefined, fullName: string | undefined } = {
             fullName: useAuthStore.getState().authUser?.fullName,
             userId: useAuthStore.getState().authUser?._id
         };
         try {
             get().connectSocket();
-            const res = await axiosInstance.post("/room/create-room", { 
-                ...roomData, 
+            const res = await axiosInstance.post("/room/create-room", {
+                ...roomData,
                 userDetails: userDetails
             });
             get().socket?.emit('joinSocketRoom', userDetails.userId);
@@ -44,17 +44,17 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     },
 
     joinRoom: async (joinRoomData) => {
-        const userDetails: { userId: string | undefined , fullName: string | undefined } = {
+        const userDetails: { userId: string | undefined, fullName: string | undefined } = {
             fullName: useAuthStore.getState().authUser?.fullName,
             userId: useAuthStore.getState().authUser?._id
         };
         try {
             if (!get().socket?.connected) get().connectSocket();
-            const res = await axiosInstance.post("/room/join-room", { 
-                ...joinRoomData, 
+            const res = await axiosInstance.post("/room/join-room", {
+                ...joinRoomData,
                 userDetails: userDetails
             });
-            set({ roomDetails: res.data }); 
+            set({ roomDetails: res.data });
             console.log(get().roomDetails?.participants);
             get().createOffer(res.data.participants[0].userId);
             return res.data?.roomId;
@@ -77,7 +77,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
         const { authUser } = useAuthStore.getState();
         if (!authUser || get().socket?.connected) return;
 
-        const backendURL = `${import.meta.env.VITE_URL}/rtc`; 
+        const backendURL = `${import.meta.env.VITE_URL}/rtc`;
         const socket = io(backendURL, {
             query: { userId: authUser._id },
             autoConnect: false
@@ -109,8 +109,8 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
         socket.on('RTCoffer', (data: { offer: RTCSessionDescription }) => {
             get().createAnswer(data.offer);
         });
- 
-        socket.on('RTCanswer' ,async (data)=>{
+
+        socket.on('RTCanswer', async (data) => {
             await get().connection?.peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer.answer));
 
         })
@@ -126,7 +126,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
                 }
             }
         });
-        
+
     },
 
     disconnectSocket: () => {
@@ -144,15 +144,15 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
         try {
             const socket = get().socket;
             if (!socket) return;
-    
+
             if (!get().connection?.peerConnection) {
                 set({ connection: PeerConnection().getInstance() });
             }
             get().connection!.peerConnection.onicecandidate = (event) => {
                 if (event.candidate) {
-                  socket.emit("new-ice-candidate", { ice: event.candidate, id: get().roomDetails?.participants[0].userId });
+                    socket.emit("new-ice-candidate", { ice: event.candidate, id: get().roomDetails?.participants[0].userId });
                 }
-              };
+            };
             const offer = await get().connection?.peerConnection.createOffer();
             await get().connection?.peerConnection.setLocalDescription(offer);
             socket.emit("RTCoffer", { offer, creatorId });
@@ -160,18 +160,18 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
             console.error("Error creating offer:", error);
         }
     },
-    
+
     createAnswer: async (offer) => {
         try {
             const socket = get().socket;
             if (!socket) return;
-    
+
             if (!get().connection?.peerConnection) {
                 set({ connection: PeerConnection().getInstance() });
             }
             get().connection!.peerConnection.onicecandidate = (event) => {
                 if (event.candidate) {
-                    socket.emit("new-ice-candidate", { ice: event.candidate , id : get().roomDetails?.participants[0].userId });
+                    socket.emit("new-ice-candidate", { ice: event.candidate, id: get().roomDetails?.participants[0].userId });
                 }
             }
             await get().connection?.peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
@@ -182,27 +182,27 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
             console.error("Error creating answer:", error);
         }
     },
-    
 
-    saveRoom : async () =>{
+
+    saveRoom: async () => {
         try {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const docsData = get().docsElements.elements.map(({ ref, ...rest }) => rest);
             const roomData = {
-                roomId : get().roomDetails?.roomId,
-                roomName : get().roomDetails?.roomName,
-                roomCreated : "2025-02-12T00:00:00.000Z",
-                participants : get().roomDetails?.participants,
-                Data :{
-                    canvasData : JSON.stringify(get().canvasElements),
-                    docsData : JSON.stringify({
-                        title : get().docsElements.title , elements : docsData
+                roomId: get().roomDetails?.roomId,
+                roomName: get().roomDetails?.roomName,
+                roomCreated: "2025-02-12T00:00:00.000Z",
+                participants: get().roomDetails?.participants,
+                Data: {
+                    canvasData: JSON.stringify(get().canvasElements),
+                    docsData: JSON.stringify({
+                        title: get().docsElements.title, elements: docsData
                     })
-                    
+
                 }
             }
 
-            const res = await axiosInstance.post("/room/save-room", {roomData});
+            const res = await axiosInstance.post("/room/save-room", { roomData });
             console.log(res);
         } catch (error) {
             console.log(error);
@@ -210,19 +210,19 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     }
     ,
 
-    getMeetings : async () => {
+    getMeetings: async () => {
         try {
             const res = await axiosInstance.get("/room/get-meetings");
-            set({ meetings : res.data.meetings });
+            set({ meetings: res.data.meetings });
         } catch (error) {
             console.log(error);
         }
     },
-    
-    getMeetingData : async (roomId) => {
+
+    getMeetingData: async (roomId) => {
         try {
             const res = await axiosInstance.get(`/room/get-meeting-data/${roomId}`);
-            set({ selectedMeetingData : res.data.meetingData });
+            set({ selectedMeetingData: res.data.meetingData });
             console.log(get().selectedMeetingData);
         } catch (error) {
             console.log(error);

@@ -22,7 +22,7 @@ After joining a room, users can see video streams and collaborate on a canvas.
 
 
 ## Tech Stack  
-- **Frontend:** React.js (leveraging **Bolt.new** for UI efficiency with custom styling)  
+- **Frontend:** React.js, zustand (leveraging **Bolt.new** for UI efficiency with custom styling)
 - **Backend:** Node.js, Express  
 - **Real-time Communication:** WebRTC, Socket.io  
 - **Data Storage:** Redis, MongoDB  
@@ -81,5 +81,4 @@ npm run dev
 3. Create a new room or join an existing one using **Room ID** and **password**.  
 4. Share the **Room ID** and **password** with participants.  
 5. Connect with peers for video/audio communication.  
-6. Collaborate on the shared canvas in real time.  
-
+6. Collaborate on the shared canvas in real time.

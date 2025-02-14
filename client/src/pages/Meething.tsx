@@ -16,8 +16,8 @@ function Meetings() {
     }
   }, [getMeetings, meetings.length]);
 
-  const handleclick = (roomId : string) =>{
-    if(!roomId) return
+  const handleclick = (roomId: string) => {
+    if (!roomId) return
     navigate(`/meeting/${roomId}`)
   }
   return (
@@ -68,7 +68,7 @@ function Meetings() {
                     </div>
                   </div>
                   <button
-                  onClick={()=> handleclick(meeting.roomId) }
+                    onClick={() => handleclick(meeting.roomId)}
                     className="px-4 py-2 text-sm text-white bg-zinc-800 rounded-lg hover:bg-zinc-700
                       transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/20"
                   >
