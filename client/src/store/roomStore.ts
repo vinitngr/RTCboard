@@ -41,7 +41,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
                 if (get().roomDetails?.participants?.length !== 2) {
                     get().exitRoom(get().roomDetails!.roomId);
                 }
-            }, 1000 * 5);
+            }, 1000 * 5 * 60);
             return res.data?.roomId;
         } catch (error) {
             console.error("Error creating room:", error);
