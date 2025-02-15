@@ -17,7 +17,7 @@ export const createRoom = async (req: any, res: any) => {
 
     const id = crypto.randomBytes(6).toString('hex')
     try {
-        await client.set(`room:${id}`, JSON.stringify({ roomId: id, status: "Active", roomPassword, participants: [{ role: "creator", ...req.body.userDetails }], roomName }), "EX", 60 * 10);
+        await client.set(`room:${id}`, JSON.stringify({ roomId: id, status: "Active", roomPassword, participants: [{ role: "creator", ...req.body.userDetails }], roomName }), "EX", 60 * 5);
         res.status(201).json({
             roomId: id,
             status: "Active",

@@ -36,6 +36,12 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
             });
             get().socket?.emit('joinSocketRoom', userDetails.userId);
             set({ roomDetails: res.data });
+
+            setTimeout(() => {
+                if (get().roomDetails?.participants?.length !== 2) {
+                    get().exitRoom(get().roomDetails!.roomId);
+                }
+            }, 1000 * 5);
             return res.data?.roomId;
         } catch (error) {
             console.error("Error creating room:", error);
