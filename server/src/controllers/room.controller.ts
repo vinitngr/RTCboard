@@ -147,9 +147,13 @@ export const getMeetings = async (req: any, res: any) => {
 
 export const getMeetingData = async (req: any, res: any) => {
     const { roomId } = req.params;
+    let userId = res.locals.user._id
     try {
         console.log(roomId);
-        const room = await Room.find({roomId}).select('Data');
+        const room = await Room.find({
+                roomId,
+                participants: { $elemMatch: { userId } }
+            }).select('Data');
         if (!room) {
             return res.status(404).json({ message: "Room not found" });
         }
