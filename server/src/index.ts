@@ -1,39 +1,49 @@
-import { app , server } from './lib/socket';
-import express from 'express'
-import path from 'path'
+import { app, server } from './lib/socket';
+import express from 'express';
+import path from 'path';
 import connectDB from './lib/db';
-//cors
+import dotenv from 'dotenv';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
+
+// Load environment variables
+dotenv.config();
+
+// CORS setup
 app.use(
   cors({
     origin: process.env.NODE_ENV === 'production' ? process.env.URL : 'http://localhost:5173',
     credentials: true,
   })
 );
-//dotenv setup
-import dotenv from 'dotenv';
-dotenv.config();
 
-//cookie
-import cookieParser from 'cookie-parser';
+// Middleware
+app.use(express.json());
 app.use(cookieParser());
-//routes
+
+// Routes
 import authRoute from './routes/auth.route';
 import roomRoute from './routes/room.route';
-//socket
-import './sockets/rtc'
+import './sockets/rtc';
 
-// Application Middleware
-app.use(express.json());
-app.use(express.static(path.join(__dirname, '../public')));
-
-//handle routes here
 app.use('/api/auth', authRoute);
 app.use('/api/room', roomRoute);
 
-//server startup
-let port : number = parseInt(process.env.PORT) || 3001;
+//production serve
+if (process.env.NODE_ENV === 'production') {
+  const Path = path.resolve(__dirname, '../../client/dist');
+  app.use(express.static(Path));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join( Path, 'index.html'));
+  });
+}
+// Static files serve
+app.use(express.static(path.resolve(__dirname, '../public')));
+
+// Start the server
+const port: number = Number(process.env.PORT) || 3001;
 server.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-  connectDB()
+  console.log(`✅ Server running at: http://localhost:${port}`);
+  connectDB();
 });

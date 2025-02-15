@@ -1,0 +1,14 @@
+{
+  "name": "rtcboard",
+  "version": "1.0.0",
+  "description": "This is a real-time collaboration platform built with **WebRTC, Node.js, React, Redis, and Socket.io**. It enables users to create and join rooms, establish peer-to-peer (P2P) connections, and collaborate on a shared canvas.",
+  "main": "index.js",
+  "scripts": {
+   "dev": "concurrently \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
+   "build" : "npm i && npm run build --prefix client && npm run build --prefix server",
+   "start": "npm run start --prefix server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
