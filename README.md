@@ -40,6 +40,13 @@ git clone https://github.com/vinitngr/RTCboard.git
 cd RTCboard  
 ```
 
+##### Quick Start (backend serving)
+```sh
+# /RTCboard
+npm run build # build project
+npm run start # runs the whole project on the provided backend port :3001
+```
+
 #### 2. Install dependencies:  
 
 ##### Backend:  
