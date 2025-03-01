@@ -10,12 +10,19 @@ import cookieParser from 'cookie-parser';
 dotenv.config();
 
 // CORS setup
+// app.use(
+//   cors({
+//     origin: process.env.NODE_ENV === 'production' ? process.env.URL : 'http://localhost:5173',
+//     credentials: true,
+//   })
+// );
 app.use(
   cors({
-    origin: process.env.NODE_ENV === 'production' ? process.env.URL : 'http://localhost:5173',
+    origin: ['http://localhost:5173', process.env.IP],
     credentials: true,
   })
 );
+
 
 // Middleware
 app.use(express.json());

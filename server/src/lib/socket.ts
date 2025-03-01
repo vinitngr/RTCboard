@@ -8,10 +8,13 @@ const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
-    cors: {
-      origin: process.env.URL as string ,
-    },
-  });
+  cors: {
+    origin: ['http://localhost:5173', process.env.IP],
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+});
+
 
 export { io, app, server };
 

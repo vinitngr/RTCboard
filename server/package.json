@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node dist/index.js",
     "build": "tsc",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "serve-public": "node dist/index.js --host 0.0.0.0"
+
   },
   "author": "vinit nagar",
   "license": "ISC",
