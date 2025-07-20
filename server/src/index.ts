@@ -9,16 +9,19 @@ import cookieParser from 'cookie-parser';
 // Load environment variables
 dotenv.config();
 
-// CORS setup
 // app.use(
 //   cors({
-//     origin: process.env.NODE_ENV === 'production' ? process.env.URL : 'http://localhost:5173',
+//     origin:
+//       process.env.NODE_ENV === 'production'
+//         ? [process.env.URL]
+//         : 'http://localhost:5173',
 //     credentials: true,
 //   })
 // );
+
 app.use(
   cors({
-    origin: ['http://localhost:5173', process.env.IP],
+    origin: ['http://localhost:5173' , process.env.URL],
     credentials: true,
   })
 );
@@ -37,14 +40,14 @@ app.use('/api/auth', authRoute);
 app.use('/api/room', roomRoute);
 
 //production serve
-if (process.env.NODE_ENV === 'production') {
-  const Path = path.resolve(__dirname, '../../client/dist');
-  app.use(express.static(Path));
+// if (process.env.NODE_ENV === 'production') {
+//   const Path = path.resolve(__dirname, '../../client/dist');
+//   app.use(express.static(Path));
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.join( Path, 'index.html'));
-  });
-}
+//   app.get('*', (req, res) => {
+//     res.sendFile(path.join( Path, 'index.html'));
+//   });
+// }
 // Static files serve
 app.use(express.static(path.resolve(__dirname, '../public')));
 
