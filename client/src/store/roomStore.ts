@@ -152,20 +152,34 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
             if (!socket) return;
 
             if (!get().connection?.peerConnection) {
-                set({ connection: PeerConnection().getInstance() });
+                const pcObj = PeerConnection().getInstance();
+
+                pcObj.peerConnection.addTransceiver('video', { direction: 'sendrecv' });
+                pcObj.peerConnection.addTransceiver('audio', { direction: 'sendrecv' });
+
+                pcObj.peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        socket.emit("new-ice-candidate", {
+                            ice: event.candidate,
+                            id: get().roomDetails?.participants[0].userId,
+                        });
+                    }
+                };
+
+                set({ connection: pcObj });
             }
-            get().connection!.peerConnection.onicecandidate = (event) => {
-                if (event.candidate) {
-                    socket.emit("new-ice-candidate", { ice: event.candidate, id: get().roomDetails?.participants[0].userId });
-                }
-            };
-            const offer = await get().connection?.peerConnection.createOffer();
-            await get().connection?.peerConnection.setLocalDescription(offer);
+
+            const pc = get().connection!.peerConnection;
+
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+
             socket.emit("RTCoffer", { offer, creatorId });
         } catch (error) {
             console.error("Error creating offer:", error);
         }
-    },
+    }
+    ,
 
     createAnswer: async (offer) => {
         try {
