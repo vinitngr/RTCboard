@@ -18,10 +18,9 @@ dotenv.config();
 //     credentials: true,
 //   })
 // );
-
 app.use(
   cors({
-    origin: ['http://localhost:5173' , "https://rtcboard.vinitngr.xyz"],
+    origin: ['http://localhost:5173', 'https://rtcboard.vinitngr.xyz'],
     credentials: true,
   })
 );
