@@ -21,7 +21,7 @@ dotenv.config();
 
 app.use(
   cors({
-    origin: ['http://localhost:5173' , process.env.URL],
+    origin: ['http://localhost:5173' , "https://rtcboard.vinitngr.xyz"],
     credentials: true,
   })
 );
