@@ -5,19 +5,13 @@ import connectDB from './lib/db';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import authRoute from './routes/auth.route';
+import roomRoute from './routes/room.route';
+import './sockets/rtc';
 
-// Load environment variables
 dotenv.config();
 
-// app.use(
-//   cors({
-//     origin:
-//       process.env.NODE_ENV === 'production'
-//         ? [process.env.URL]
-//         : 'http://localhost:5173',
-//     credentials: true,
-//   })
-// );
+// CORS middleware BEFORE routes
 app.use(
   cors({
     origin: ['http://localhost:5173', 'https://rtcboard.vinitngr.xyz'],
@@ -25,32 +19,18 @@ app.use(
   })
 );
 
-
-// Middleware
+// Middlewares
 app.use(express.json());
 app.use(cookieParser());
 
 // Routes
-import authRoute from './routes/auth.route';
-import roomRoute from './routes/room.route';
-import './sockets/rtc';
-
 app.use('/api/auth', authRoute);
 app.use('/api/room', roomRoute);
 
-//production serve
-// if (process.env.NODE_ENV === 'production') {
-//   const Path = path.resolve(__dirname, '../../client/dist');
-//   app.use(express.static(Path));
-
-//   app.get('*', (req, res) => {
-//     res.sendFile(path.join( Path, 'index.html'));
-//   });
-// }
-// Static files serve
+// Serve static files (optional)
 app.use(express.static(path.resolve(__dirname, '../public')));
 
-// Start the server
+// Start server
 const port: number = Number(process.env.PORT) || 3001;
 server.listen(port, () => {
   console.log(`✅ Server running at: http://localhost:${port}`);
