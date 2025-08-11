@@ -3,6 +3,11 @@ import client from '../lib/redis';
 import { z } from 'zod';
 import { rtc, userInRoom } from '../sockets/rtc';
 import Room from '../models/Room';
+
+function generateRoomId() {
+    return Math.floor(1000 + Math.random() * 9000).toString();
+}
+
 export const createRoom = async (req: any, res: any) => {
     const { roomName, roomPassword, createdBy } = req.body;
     const createRoomSchema = z.object({
@@ -15,7 +20,19 @@ export const createRoom = async (req: any, res: any) => {
         return res.status(400).json({ message: validation.error.errors[0].message });
     }
 
-    const id = crypto.randomBytes(6).toString('hex')
+    let id: string;
+    const maxAttempts = 5;
+    let attempts = 0;
+    do {
+        if (attempts++ > maxAttempts) {
+            return res.status(500).json({ message: "Could not generate unique room ID" });
+        }
+        id = generateRoomId();
+        const exists = await client.exists(`room:${id}`);
+        if (!exists) break;
+    } while (true);
+
+
     try {
         await client.set(`room:${id}`, JSON.stringify({ roomId: id, status: "Active", roomPassword, participants: [{ role: "creator", ...req.body.userDetails }], roomName }), "EX", 60 * 5);
         res.status(201).json({
@@ -151,13 +168,13 @@ export const getMeetingData = async (req: any, res: any) => {
     try {
         console.log(roomId);
         const room = await Room.find({
-                roomId,
-                participants: { $elemMatch: { userId } }
-            }).select('Data');
+            roomId,
+            participants: { $elemMatch: { userId } }
+        }).select('Data');
         if (!room) {
             return res.status(404).json({ message: "Room not found" });
         }
-        res.status(200).json({ meetingData : room[0].Data })
+        res.status(200).json({ meetingData: room[0].Data })
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
     }
