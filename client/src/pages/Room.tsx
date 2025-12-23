@@ -18,7 +18,8 @@ export default function Room() {
         cleanupRoom();
       }
     };
-  }, [roomDetails, exitRoom, cleanupRoom]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (connection) {
@@ -36,9 +37,6 @@ export default function Room() {
         channel.onopen = () => console.log('Data channel opened');
         channel.onclose = () => {
           console.log('data channel closed');
-          if (connection) {
-            connection.peerConnection.close();
-          }
           exitRoom(roomDetails?.roomId);
           cleanupRoom();
           navigate('/home');
