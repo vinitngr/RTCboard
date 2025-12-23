@@ -35,6 +35,7 @@ export interface RoomStore {
     exitRoom: (roomId: string | undefined) => Promise<void>;
     connectSocket: () => void;
     disconnectSocket: () => void;
+    cleanupRoom: () => void;
     createOffer: (creatorId: string) => void;
     createAnswer: (offer: RTCSessionDescription) => void;
     saveRoom: () => void;

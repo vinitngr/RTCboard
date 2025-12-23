@@ -104,11 +104,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
         socket.on('userExited', (data) => {
             console.log(get().connection);
             if (data.userExited) {
-                window.location.reload();
-                get().disconnectSocket();
-                set({ roomDetails: null });
-                // get().connection?.dataChannel.close() // 
-                // get().connection?.peerConnection.close()  //
+                get().cleanupRoom();
             }
         });
 
@@ -143,6 +139,55 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
             }
         } catch (error) {
             console.error("Error disconnecting socket:", error);
+        }
+    },
+
+    cleanupRoom: () => {
+        try {
+            const { connection, socket } = get();
+            
+            // Close peer connection and stop all tracks
+            if (connection) {
+                // Get all senders and stop their tracks
+                connection.peerConnection.getSenders().forEach(sender => {
+                    if (sender.track) {
+                        sender.track.stop();
+                    }
+                });
+                
+                // Get all receivers and stop their tracks
+                connection.peerConnection.getReceivers().forEach(receiver => {
+                    if (receiver.track) {
+                        receiver.track.stop();
+                    }
+                });
+                
+                // Close data channel if it exists
+                if (connection.dataChannel && connection.dataChannel.readyState !== 'closed') {
+                    connection.dataChannel.close();
+                }
+                
+                // Close peer connection
+                if (connection.peerConnection.signalingState !== 'closed') {
+                    connection.peerConnection.close();
+                }
+            }
+            
+            // Disconnect socket
+            if (socket?.connected) {
+                socket.disconnect();
+            }
+            
+            // Reset state
+            set({ 
+                connection: null, 
+                socket: null, 
+                roomDetails: null,
+                canvasElements: [],
+                docsElements: { title: '', elements: [] }
+            });
+        } catch (error) {
+            console.error("Error cleaning up room:", error);
         }
     },
 
