@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRoomStore } from '../store/roomStore';
+import { useNavigate } from 'react-router-dom';
 import { Check, Copy, FileText, PenTool, Save } from 'lucide-react';
 import ExcalidrawCanvas from './ExcalidrawCanvas';
 import Docs from './Docs';
@@ -7,8 +8,9 @@ import Docs from './Docs';
 function Canvas() {
   const [liveUser, setLiveUser] = useState(0);
   const [copied, setCopied] = useState(false);
-  const { exitRoom, roomDetails, saveRoom } = useRoomStore()
+  const { exitRoom, roomDetails, saveRoom, cleanupRoom } = useRoomStore()
   const [mode, setMode] = useState<'draw' | 'view'>('draw');
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLiveUser(roomDetails?.participants?.length || 0);
@@ -27,6 +29,8 @@ function Canvas() {
     }
     saveRoom()
     exitRoom(roomDetails?.roomId)
+    cleanupRoom()
+    navigate('/home')
   }
 
   return (
